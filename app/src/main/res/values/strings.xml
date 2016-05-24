@@ -1,4 +1,11 @@
 <resources>
   <string name="app_name">Hsilop</string>
   <string name="action_settings">Settings</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="zero">0</string>
+  <string name="second">2nd</string>
+  <string name="sin">sin</string>
+  <string name="cos">cos</string>
+  <string name="tan">tan</string>
+  <string name="undo">undo</string>
 </resources>

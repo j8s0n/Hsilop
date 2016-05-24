@@ -21,6 +21,15 @@ class Calculator {
   private static final BigDecimal NEGATIVE_ONE = BigDecimal.ONE.negate();
   private static final BigDecimal ONE = BigDecimal.ONE;
 
+  private static final Calculator calculator = new Calculator();
+
+  public static Calculator getInstance() {
+    return calculator;
+  }
+
+  private Calculator() {
+  }
+
   public void enter(@NotNull BigDecimal bd) {
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.ADD, bd)));
     stack.push(bd);
@@ -324,6 +333,27 @@ class Calculator {
     }
   }
 
+  public synchronized void swap() {
+    checkSize(OperatorType.BINARY);
+    BigDecimal x = stack.pop();
+    BigDecimal y = stack.pop();
+    stack.push(x);
+    stack.push(y);
+
+    undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
+                                        new HistoryEntry(ActionType.REMOVE, y),
+                                        new HistoryEntry(ActionType.ADD, x),
+                                        new HistoryEntry(ActionType.ADD, y)));
+  }
+
+  public synchronized BigDecimal getTop() {
+    return peekDeep(0);
+  }
+
+  public synchronized ImmutableList<BigDecimal> getStack() {
+    return ImmutableList.copyOf(stack);
+  }
+
   private void checkSize(@NotNull OperatorType operatorType) {
     if (stack.size() < operatorType.value()) {
       throw new IllegalStateException("Stack is undersized.");
@@ -342,14 +372,6 @@ class Calculator {
     }
 
     return returnValue;
-  }
-
-  public BigDecimal getTop() {
-    return peekDeep(0);
-  }
-
-  public ImmutableList<BigDecimal> getStack() {
-    return ImmutableList.copyOf(stack);
   }
 
   @RequiredArgsConstructor(suppressConstructorProperties = true)
