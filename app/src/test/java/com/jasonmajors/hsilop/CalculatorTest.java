@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class CalculatorTest {
-  public static final double DELTA = 0.00001;
+  private static final double DELTA = 0.00001;
   private Calculator calculator;
   private final BigDecimal x = BigDecimal.valueOf(4.3);
   private final BigDecimal y = BigDecimal.valueOf(6.2);
@@ -26,15 +26,15 @@ public class CalculatorTest {
   private final BigDecimal xthRootOfY = BigDecimal.valueOf(1.5285411577);
 
   @Rule
-  public ExpectedException thrown = ExpectedException.none();
+  ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setup() {
-    calculator = new Calculator();
+    calculator = Calculator.getInstance();
   }
 
   @Test
-  public void enter() {
+  void enter() {
     calculator.enter(y);
     assertEquals(1, calculator.getStack().size());
     calculator.enter(x);
@@ -44,7 +44,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void add() {
+  void add() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.add();
@@ -53,7 +53,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void subtract() {
+  void subtract() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.subtract();
@@ -62,7 +62,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void multiply() {
+  void multiply() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.multiply();
@@ -71,7 +71,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void divide() {
+  void divide() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.divide();
@@ -80,7 +80,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void divideByZero() {
+  void divideByZero() {
     calculator.enter(x);
     calculator.enter(BigDecimal.ZERO);
     try {
@@ -95,7 +95,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void power() {
+  void power() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.power();
@@ -104,7 +104,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void square() {
+  void square() {
     calculator.enter(x);
     calculator.square();
     assertEquals(x.multiply(x), calculator.getTop());
@@ -112,14 +112,14 @@ public class CalculatorTest {
   }
 
   @Test
-  public void squareRoot() {
+  void squareRoot() {
     calculator.enter(x);
     calculator.squareRoot();
     assertEquals(Math.sqrt(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void squareRootOfANegative() {
+  void squareRootOfANegative() {
     calculator.enter(negX);
     try {
       calculator.squareRoot();
@@ -131,14 +131,14 @@ public class CalculatorTest {
   }
 
   @Test
-  public void naturalLog() {
+  void naturalLog() {
     calculator.enter(x);
     calculator.naturalLog();
     assertEquals(Math.log(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void naturalLogOfANegative() {
+  void naturalLogOfANegative() {
     calculator.enter(negX);
     try {
       calculator.naturalLog();
@@ -150,28 +150,28 @@ public class CalculatorTest {
   }
 
   @Test
-  public void eToTheX() {
+  void eToTheX() {
     calculator.enter(x);
     calculator.eToTheX();
     assertEquals(Math.exp(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void eToTheNegativeX() {
+  void eToTheNegativeX() {
     calculator.enter(negX);
     calculator.eToTheX();
     assertEquals(Math.exp(negX.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void log10() {
+  void log10() {
     calculator.enter(x);
     calculator.log10();
     assertEquals(Math.log10(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void log10OfANegative() {
+  void log10OfANegative() {
     calculator.enter(negX);
     try {
       calculator.log10();
@@ -183,49 +183,49 @@ public class CalculatorTest {
   }
 
   @Test
-  public void tenToTheX() {
+  void tenToTheX() {
     calculator.enter(x);
     calculator.tenToTheX();
     assertEquals(Math.pow(10, x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void tenToTheNegativeX() {
+  void tenToTheNegativeX() {
     calculator.enter(negX);
     calculator.tenToTheX();
     assertEquals(Math.pow(10, negX.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void sin() {
+  void sin() {
     calculator.enter(x);
     calculator.sin();
     assertEquals(Math.sin(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void cos() {
+  void cos() {
     calculator.enter(x);
     calculator.cos();
     assertEquals(Math.cos(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void tan() {
+  void tan() {
     calculator.enter(x);
     calculator.tan();
     assertEquals(Math.tan(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void asin() {
+  void asin() {
     calculator.enter(oneHalf);
     calculator.asin();
     assertEquals(Math.asin(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void asinOutOfRange() {
+  void asinOutOfRange() {
     calculator.enter(x);
     try {
       calculator.asin();
@@ -237,14 +237,14 @@ public class CalculatorTest {
   }
 
   @Test
-  public void acos() {
+  void acos() {
     calculator.enter(oneHalf);
     calculator.acos();
     assertEquals(Math.acos(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void acosOutOfRange() {
+  void acosOutOfRange() {
     calculator.enter(x);
     try {
       calculator.acos();
@@ -256,21 +256,21 @@ public class CalculatorTest {
   }
 
   @Test
-  public void atan() {
+  void atan() {
     calculator.enter(oneHalf);
     calculator.atan();
     assertEquals(Math.atan(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void oneOverX() {
+  void oneOverX() {
     calculator.enter(x);
     calculator.oneOverX();
     assertEquals(BigDecimal.ONE.divide(x, MathContext.DECIMAL128), calculator.getTop());
   }
 
   @Test
-  public void oneOverZero() {
+  void oneOverZero() {
     calculator.enter(BigDecimal.ZERO);
     try {
       calculator.oneOverX();
@@ -282,28 +282,28 @@ public class CalculatorTest {
   }
 
   @Test
-  public void integerFactorial() {
+  void integerFactorial() {
     calculator.enter(four);
     calculator.factorial();
     assertEquals(fourFactorial, calculator.getTop());
   }
 
   @Test
-  public void zeroFactorial() {
+  void zeroFactorial() {
     calculator.enter(BigDecimal.ZERO);
     calculator.factorial();
     assertEquals(BigDecimal.ONE, calculator.getTop());
   }
 
   @Test
-  public void fractionFactorial() {
+  void fractionFactorial() {
     calculator.enter(x);
     calculator.factorial();
     assertEquals(xFactorial.doubleValue(), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  public void xthRootOfY() {
+  void xthRootOfY() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.xthRootOfY();
@@ -311,7 +311,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void xthRootOfANegative() {
+  void xthRootOfANegative() {
     calculator.enter(negX);
     calculator.enter(x);
 
@@ -326,14 +326,14 @@ public class CalculatorTest {
   }
 
   @Test
-  public void negate() {
+  void negate() {
     calculator.enter(x);
     calculator.negate();
     assertEquals(negX, calculator.getTop());
   }
 
   @Test
-  public void dropOneValue() {
+  void dropOneValue() {
     calculator.enter(x);
     calculator.enter(y);
     assertEquals(2, calculator.getStack().size());
@@ -344,13 +344,13 @@ public class CalculatorTest {
   }
 
   @Test
-  public void dropValueOnEmptyStack() {
+  void dropValueOnEmptyStack() {
     thrown.expect(IllegalStateException.class);
     calculator.dropOneValue();
   }
 
   @Test
-  public void clearStack() {
+  void clearStack() {
     calculator.enter(x);
     calculator.enter(y);
     assertEquals(2, calculator.getStack().size());
@@ -359,7 +359,7 @@ public class CalculatorTest {
   }
 
   @Test
-  public void undo() {
+  void undo() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.add();
