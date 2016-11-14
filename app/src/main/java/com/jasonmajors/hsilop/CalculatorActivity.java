@@ -9,9 +9,7 @@ import android.widget.Toast;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,6 +167,7 @@ public class CalculatorActivity extends AppCompatActivity {
     }
     else if (shift) {
       executeOperation(calculator::tenToTheX);
+      toggleShift();
     }
     else {
       executeOperation(calculator::log10);
@@ -181,6 +180,7 @@ public class CalculatorActivity extends AppCompatActivity {
     }
     else if (shift) {
       executeOperation(calculator::eToTheX);
+      toggleShift();
     }
     else {
       executeOperation(calculator::naturalLog);
@@ -194,7 +194,7 @@ public class CalculatorActivity extends AppCompatActivity {
       input.delete(0, input.length());
     }
 
-    calculator.enter(new BigDecimal(value));
+    calculator.enter(Number.valueOf(value));
     redrawStack(false);
   }
 
@@ -237,6 +237,7 @@ public class CalculatorActivity extends AppCompatActivity {
   private void power() {
     if (shift) {
       executeOperation(calculator::xthRootOfY);
+      toggleShift();
     }
     else {
       executeOperation(calculator::power);
@@ -279,6 +280,7 @@ public class CalculatorActivity extends AppCompatActivity {
       clearInput();
       calculator.clearStack();
       redrawStack(false);
+      toggleShift();
     }
     else {
       if (input.length() > 0) {
@@ -298,6 +300,7 @@ public class CalculatorActivity extends AppCompatActivity {
 
   private void dropSwap() {
     if (shift) {
+      toggleShift();
       if (entryMode && input.length() > 0) {
         pressEnter();
       }
@@ -327,10 +330,10 @@ public class CalculatorActivity extends AppCompatActivity {
     try {
       if (input.length() > 0) {
         if (hexMode) {
-          calculator.enter(new BigDecimal(new BigInteger(input.toString(), 16)));
+          calculator.enter(Number.valueOf((new BigInteger(input.toString(), 16).doubleValue())));
         }
         else {
-          calculator.enter(new BigDecimal(input.toString()));
+          calculator.enter(Number.valueOf(input.toString()));
         }
 
         clearInput();
@@ -358,7 +361,7 @@ public class CalculatorActivity extends AppCompatActivity {
   }
 
   private void redrawStack(boolean showInputLine) {
-    ImmutableList<BigDecimal> stack = calculator.getStack();
+    ImmutableList<Number> stack = calculator.getStack();
     int offset = showInputLine ? 1 : 0;
     if (showInputLine) {
       registers.get(0).setText(input);
@@ -366,40 +369,12 @@ public class CalculatorActivity extends AppCompatActivity {
 
     for (int i = 0; i + offset < registers.size(); i++) {
       if (stack.size() > i) {
-        registers.get(i + offset).setText(formatValue(stack.get(i)));
+        registers.get(i + offset).setText(stack.get(i).toString(hexMode));
       }
       else {
         registers.get(i + offset).setText("");
       }
     }
-  }
-
-  private String formatValue(BigDecimal value) {
-    /*
-    bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
-
-    DecimalFormat df = new DecimalFormat();
-
-    df.setMaximumFractionDigits(2);
-
-    df.setMinimumFractionDigits(0);
-
-    df.setGroupingUsed(false);
-    String result = df.format(bd);
-    */
-    BigDecimal bd = value.setScale(10, BigDecimal.ROUND_HALF_UP);
-    DecimalFormat format = new DecimalFormat();
-    format.setMaximumFractionDigits(10);
-    format.setMinimumFractionDigits(0);
-    format.setGroupingUsed(true);
-
-    // TODO Limit to 15 chars.
-    if (hexMode) {
-      return "0x" + value.toBigInteger().toString(16);
-    }
-
-    return format.format(bd);
-    // return value.toString().replaceFirst("\\.0*$", "");
   }
 
   private void toggleRadians() {

@@ -1,9 +1,91 @@
 package com.jasonmajors.hsilop;
 
-/**
- * Created by jason on 2016-11-13.
- */
+import org.jetbrains.annotations.NotNull;
 
-public class Number {
-  
+class Number {
+  static Number ZERO = new Number(0.0);
+  static Number ONE = new Number(1.0);
+  static Number NEGATIVE_ONE = new Number(-1.0);
+  private double value;
+  private static final double CLOSE_ENOUGH = 0.000000001;
+
+  private Number(double value) {
+    this.value = value;
+  }
+
+  double doubleValue() {
+    return value;
+  }
+
+  Number add(Number rhs) {
+    return new Number(value + rhs.value);
+  }
+
+  @NotNull
+  static Number valueOf(double d) {
+    return new Number(d);
+  }
+
+  @NotNull
+  Number subtract(Number rhs) {
+    return new Number(value - rhs.value);
+  }
+
+  @NotNull
+  Number multiply(Number rhs) {
+    return new Number(value * rhs.value);
+  }
+
+  @NotNull
+  Number divide(Number rhs) {
+    return new Number(value / rhs.value);
+  }
+
+  int compareTo(Number rhs) {
+    double diff = value - rhs.value;
+    if (Math.abs(diff) < CLOSE_ENOUGH) {
+      return 0;
+    }
+    else if (value < rhs.value) {
+      return -1;
+    }
+    else {
+      return 1;
+    }
+  }
+
+  @NotNull
+  Number pow(int exponent) {
+    return new Number(Math.pow(value, exponent));
+  }
+
+  boolean isInteger() {
+    return (long)value == value;
+  }
+
+  int intValue() {
+    return (int)value;
+  }
+
+  @NotNull
+  Number negate() {
+    return new Number(0 - value);
+  }
+
+  @NotNull
+  static Number valueOf(String s) {
+    return new Number(Double.parseDouble(s));
+  }
+
+  @NotNull
+  String toString(boolean hexMode) {
+    if (hexMode) {
+      String neg = (value < 0) ? "-" : "";
+      String hex = Integer.toHexString((int)Math.abs(value));
+      return "0x" + neg + hex;
+    }
+    else {
+      return Double.toString(value);
+    }
+  }
 }

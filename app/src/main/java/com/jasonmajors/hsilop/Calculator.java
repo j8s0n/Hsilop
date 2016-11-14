@@ -6,17 +6,17 @@ import com.google.common.math.BigIntegerMath;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.jasonmajors.hsilop.Number.NEGATIVE_ONE;
+import static com.jasonmajors.hsilop.Number.ONE;
+import static com.jasonmajors.hsilop.Number.ZERO;
+
 class Calculator {
-  private final Deque<BigDecimal> stack = Lists.newLinkedList();
+  private final Deque<Number> stack = Lists.newLinkedList();
   private final Deque<List<HistoryEntry>> undoHistory = Lists.newLinkedList();
-  private static final BigDecimal NEGATIVE_ONE = BigDecimal.ONE.negate();
-  private static final BigDecimal ONE = BigDecimal.ONE;
 
   private static final Calculator calculator = new Calculator();
 
@@ -27,16 +27,16 @@ class Calculator {
   private Calculator() {
   }
 
-  void enter(@NotNull BigDecimal bd) {
+  void enter(@NotNull Number bd) {
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.ADD, bd)));
     stack.push(bd);
   }
 
   synchronized void add() {
     checkSize(OperatorType.BINARY);
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = y.add(x);
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = y.add(x);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -45,9 +45,9 @@ class Calculator {
 
   synchronized void subtract() {
     checkSize(OperatorType.BINARY);
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = y.subtract(x);
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = y.subtract(x);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -56,9 +56,9 @@ class Calculator {
 
   synchronized void multiply() {
     checkSize(OperatorType.BINARY);
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = y.multiply(x);
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = y.multiply(x);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -67,13 +67,13 @@ class Calculator {
 
   synchronized void divide() {
     checkSize(OperatorType.BINARY);
-    if (stack.peek().compareTo(BigDecimal.ZERO) == 0) {
+    if (stack.peek().compareTo(ZERO) == 0) {
       throw new IllegalStateException("Divide by zero.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = y.divide(x, MathContext.DECIMAL128);
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = y.divide(x);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -82,9 +82,9 @@ class Calculator {
 
   synchronized void power() {
     checkSize(OperatorType.BINARY);
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.pow(y.doubleValue(), x.doubleValue()));
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = Number.valueOf(Math.pow(y.doubleValue(), x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -93,8 +93,8 @@ class Calculator {
 
   synchronized void square() {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = x.pow(2);
+    Number x = stack.pop();
+    Number z = x.pow(2);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -102,12 +102,12 @@ class Calculator {
 
   synchronized void squareRoot() {
     checkSize(OperatorType.UNARY);
-    if (stack.peek().compareTo(BigDecimal.ZERO) < 0) {
+    if (stack.peek().compareTo(ZERO) < 0) {
       throw new IllegalStateException("Cannot take the root of a negative.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.sqrt(x.doubleValue()));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.sqrt(x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -115,12 +115,12 @@ class Calculator {
 
   synchronized void naturalLog() {
     checkSize(OperatorType.UNARY);
-    if (stack.peek().compareTo(BigDecimal.ZERO) < 0) {
+    if (stack.peek().compareTo(ZERO) < 0) {
       throw new IllegalStateException("Cannot take the log of a negative.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.log(x.doubleValue()));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.log(x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -128,8 +128,8 @@ class Calculator {
 
   synchronized void eToTheX() {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.exp(x.doubleValue()));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.exp(x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -137,12 +137,12 @@ class Calculator {
 
   synchronized void log10() {
     checkSize(OperatorType.UNARY);
-    if (stack.peek().compareTo(BigDecimal.ZERO) < 0) {
+    if (stack.peek().compareTo(ZERO) < 0) {
       throw new IllegalStateException("Cannot take the log of a negative.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.log10(x.doubleValue()));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.log10(x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -150,8 +150,8 @@ class Calculator {
 
   synchronized void tenToTheX() {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.pow(10.0, x.doubleValue()));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.pow(10.0, x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -159,8 +159,8 @@ class Calculator {
 
   synchronized void sin(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.sin(convertToRadians(x.doubleValue(), radians)));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.sin(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -168,8 +168,8 @@ class Calculator {
 
   synchronized void cos(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.cos(convertToRadians(x.doubleValue(), radians)));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.cos(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -177,8 +177,8 @@ class Calculator {
 
   synchronized void tan(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.tan(convertToRadians(x.doubleValue(), radians)));
+    Number x = stack.pop();
+    Number z = Number.valueOf(Math.tan(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -186,13 +186,13 @@ class Calculator {
 
   synchronized void asin(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal peek = stack.peek();
+    Number peek = stack.peek();
     if (peek.compareTo(NEGATIVE_ONE) < 0 || peek.compareTo(ONE) > 0) {
       throw new IllegalStateException("Invalid input.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(convertOutputAngle(Math.asin(x.doubleValue()), radians));
+    Number x = stack.pop();
+    Number z = Number.valueOf(convertOutputAngle(Math.asin(x.doubleValue()), radians));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -200,13 +200,13 @@ class Calculator {
 
   synchronized void acos(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal peek = stack.peek();
+    Number peek = stack.peek();
     if (peek.compareTo(NEGATIVE_ONE) < 0 || peek.compareTo(ONE) > 0) {
       throw new IllegalStateException("Invalid input.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(convertOutputAngle(Math.acos(x.doubleValue()), radians));
+    Number x = stack.pop();
+    Number z = Number.valueOf(convertOutputAngle(Math.acos(x.doubleValue()), radians));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -214,8 +214,8 @@ class Calculator {
 
   synchronized void atan(boolean radians) {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(convertOutputAngle(Math.atan(x.doubleValue()), radians));
+    Number x = stack.pop();
+    Number z = Number.valueOf(convertOutputAngle(Math.atan(x.doubleValue()), radians));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -239,12 +239,12 @@ class Calculator {
 
   synchronized void oneOverX() {
     checkSize(OperatorType.UNARY);
-    if (stack.peek().compareTo(BigDecimal.ZERO) == 0) {
+    if (stack.peek().compareTo(ZERO) == 0) {
       throw new IllegalStateException("Divide by zero.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal z = BigDecimal.ONE.divide(x, MathContext.DECIMAL128);
+    Number x = stack.pop();
+    Number z = ONE.divide(x);
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -253,20 +253,20 @@ class Calculator {
   synchronized void factorial() {
     checkSize(OperatorType.UNARY);
     // n! = gamma(n + 1)
-    BigDecimal x = stack.pop();
-    BigDecimal z;
+    Number x = stack.pop();
+    Number z;
 
     // Zero.
-    if (x.equals(BigDecimal.ZERO)) {
-      z = BigDecimal.ONE;
+    if (x.equals(ZERO)) {
+      z = ONE;
     }
     // Integer.
-    else if (x.scale() <= 0 || x.stripTrailingZeros().scale() <= 0) {
-      z = new BigDecimal(BigIntegerMath.factorial(x.intValue()));
+    else if (x.isInteger()) {
+      z = Number.valueOf(BigIntegerMath.factorial(x.intValue()).doubleValue());
     }
     // Other.
     else {
-      z = BigDecimal.valueOf(gamma(x.doubleValue() + 1));
+      z = Number.valueOf(gamma(x.doubleValue() + 1));
     }
 
     stack.push(z);
@@ -283,13 +283,13 @@ class Calculator {
 
   synchronized void xthRootOfY() {
     checkSize(OperatorType.BINARY);
-    if (peekDeep(1).compareTo(BigDecimal.ZERO) < 0) {
+    if (peekDeep(1).compareTo(Number.ZERO) < 0) {
       throw new IllegalStateException("Cannot take the root of a negative.");
     }
 
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
-    BigDecimal z = BigDecimal.valueOf(Math.pow(y.doubleValue(), 1.0 / x.doubleValue()));
+    Number x = stack.pop();
+    Number y = stack.pop();
+    Number z = Number.valueOf(Math.pow(y.doubleValue(), 1.0 / x.doubleValue()));
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.REMOVE, y),
@@ -298,8 +298,8 @@ class Calculator {
 
   synchronized void negate() {
     checkSize(OperatorType.UNARY);
-    BigDecimal x = stack.pop();
-    BigDecimal z = x.negate();
+    Number x = stack.pop();
+    Number z = x.negate();
     stack.push(z);
     undoHistory.push(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
                                         new HistoryEntry(ActionType.ADD, z)));
@@ -348,8 +348,8 @@ class Calculator {
 
   synchronized void swap() {
     checkSize(OperatorType.BINARY);
-    BigDecimal x = stack.pop();
-    BigDecimal y = stack.pop();
+    Number x = stack.pop();
+    Number y = stack.pop();
     stack.push(x);
     stack.push(y);
 
@@ -359,11 +359,11 @@ class Calculator {
                                         new HistoryEntry(ActionType.ADD, y)));
   }
 
-  synchronized BigDecimal getTop() {
+  synchronized Number getTop() {
     return peekDeep(0);
   }
 
-  synchronized ImmutableList<BigDecimal> getStack() {
+  synchronized ImmutableList<Number> getStack() {
     return ImmutableList.copyOf(stack);
   }
 
@@ -373,13 +373,13 @@ class Calculator {
     }
   }
 
-  private BigDecimal peekDeep(int depth) {
+  private Number peekDeep(int depth) {
     if (stack.size() < depth + 1) {
       throw new IllegalStateException("Insufficient operands.");
     }
 
-    Iterator<BigDecimal> iterator = stack.iterator();
-    BigDecimal returnValue = iterator.next();
+    Iterator<Number> iterator = stack.iterator();
+    Number returnValue = iterator.next();
     for (int i = 0; i < depth; i++) {
       returnValue = iterator.next();
     }
@@ -389,14 +389,14 @@ class Calculator {
 
   private class HistoryEntry {
     private final ActionType actionType;
-    private final BigDecimal value;
+    private final Number value;
 
-    HistoryEntry(ActionType actionType, BigDecimal value) {
+    HistoryEntry(ActionType actionType, Number value) {
       this.actionType = actionType;
       this.value = value;
     }
 
-    BigDecimal getValue() {
+    Number getValue() {
       return value;
     }
   }
