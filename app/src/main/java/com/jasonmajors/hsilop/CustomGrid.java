@@ -8,19 +8,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomGrid extends BaseAdapter {
-  private Context context;
-  private final ButtonName[] buttonNames;
-  private final int imageId = R.drawable.dummy_icon;
+import java.util.List;
 
-  public CustomGrid(Context c, ButtonName[] buttonNames) {
+class CustomGrid extends BaseAdapter {
+  private Context context;
+  private final List<CalculatorButton> buttons;
+
+  CustomGrid(Context c, List<CalculatorButton> buttons) {
     context = c;
-    this.buttonNames = buttonNames;
+    this.buttons = buttons;
   }
 
   @Override
   public int getCount() {
-    return buttonNames.length;
+    return buttons.size();
   }
 
   @Override
@@ -42,10 +43,11 @@ public class CustomGrid extends BaseAdapter {
       grid = inflater.inflate(R.layout.grid_single, null);
 
       ImageView imageView = (ImageView) grid.findViewById(R.id.grid_image);
-      imageView.setImageResource(imageId);
+      imageView.setImageResource(buttons.get(position).getBasicImageId());
+      buttons.get(position).setImageView(imageView);
 
       TextView textView = (TextView) grid.findViewById(R.id.grid_text);
-      textView.setText(buttonNames[position].getLabel());
+      textView.setText(buttons.get(position).getName());
     }
     else {
       grid = convertView;

@@ -96,7 +96,7 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:fontFamily="monospace"
-      android:text="0"
+      android:text=""
       android:textAlignment="textEnd"
       android:textAppearance="@android:style/TextAppearance.Material.Large"
       android:textSize="30sp"/>

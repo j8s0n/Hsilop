@@ -7,372 +7,324 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jasonmajors.hsilop.ButtonName.ADDITION;
-import static com.jasonmajors.hsilop.ButtonName.BACKSPACE_CLEAR;
-import static com.jasonmajors.hsilop.ButtonName.COSINE;
-import static com.jasonmajors.hsilop.ButtonName.DECIMAL;
-import static com.jasonmajors.hsilop.ButtonName.DEGREES_RADIANS;
-import static com.jasonmajors.hsilop.ButtonName.DIVIDE;
-import static com.jasonmajors.hsilop.ButtonName.DROP_SWAP;
-import static com.jasonmajors.hsilop.ButtonName.EEX;
-import static com.jasonmajors.hsilop.ButtonName.EIGHT;
-import static com.jasonmajors.hsilop.ButtonName.ENTER;
-import static com.jasonmajors.hsilop.ButtonName.FACTORIAL;
-import static com.jasonmajors.hsilop.ButtonName.FIVE;
-import static com.jasonmajors.hsilop.ButtonName.FOUR;
-import static com.jasonmajors.hsilop.ButtonName.HEX_DECIMAL;
-import static com.jasonmajors.hsilop.ButtonName.INVERSE;
-import static com.jasonmajors.hsilop.ButtonName.LOG;
-import static com.jasonmajors.hsilop.ButtonName.MULTIPLY;
-import static com.jasonmajors.hsilop.ButtonName.NATURAL_LOG;
-import static com.jasonmajors.hsilop.ButtonName.NEGATION;
-import static com.jasonmajors.hsilop.ButtonName.NINE;
-import static com.jasonmajors.hsilop.ButtonName.ONE;
-import static com.jasonmajors.hsilop.ButtonName.PI_CONSTANTS;
-import static com.jasonmajors.hsilop.ButtonName.POWER_XTH_ROOT;
-import static com.jasonmajors.hsilop.ButtonName.SEVEN;
-import static com.jasonmajors.hsilop.ButtonName.SHIFT;
-import static com.jasonmajors.hsilop.ButtonName.SINE;
-import static com.jasonmajors.hsilop.ButtonName.SIX;
-import static com.jasonmajors.hsilop.ButtonName.SQUARED;
-import static com.jasonmajors.hsilop.ButtonName.SQUARE_ROOT;
-import static com.jasonmajors.hsilop.ButtonName.SUBTRACT;
-import static com.jasonmajors.hsilop.ButtonName.TANGENT;
-import static com.jasonmajors.hsilop.ButtonName.THREE;
-import static com.jasonmajors.hsilop.ButtonName.TWO;
-import static com.jasonmajors.hsilop.ButtonName.UNDO;
-import static com.jasonmajors.hsilop.ButtonName.ZERO;
-import static com.jasonmajors.hsilop.ButtonName.values;
+import static android.view.Gravity.TOP;
 
 public class CalculatorActivity extends AppCompatActivity {
-  private boolean shift = false;
-  private boolean decimalEntered = false;
-  private boolean eexEntered = false;
-  private boolean entryMode = false;
-  private boolean hexMode = false;
-  private boolean radiansMode = true;
+  boolean shift = false;
+  boolean decimalEntered = false;
+  boolean eexEntered = false;
+  boolean entryMode = false;
+  boolean hexMode = false;
+  boolean radiansMode = true;
 
   private final StringBuilder input = new StringBuilder();
   private final Calculator calculator = Calculator.getInstance();
+  private final CalculatorButton radiansButton =
+      new CalculatorButton("rad", R.drawable.dummy_icon, 0, 0, this::toggleRadians);
 
-  private TextView registerX;
-  private TextView registerY;
-  private TextView register1;
-  private TextView register2;
+  private ArrayList<CalculatorButton> buttons = Lists.newArrayList(
+      new CalculatorButton("^", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::toggleShift),
+      new CalculatorButton("sin", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::sine),
+      new CalculatorButton("cos", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::cosine),
+      new CalculatorButton("tan", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::tangent),
+      new CalculatorButton("undo", R.drawable.dummy_icon, 0, 0, this::undo),
+
+      new CalculatorButton("log", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::log),
+      new CalculatorButton("ln", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::ln),
+      new CalculatorButton("0x", R.drawable.dummy_icon, 0, 0, this::toggleHex),
+      radiansButton,
+      new CalculatorButton("π", R.drawable.dummy_icon, 0, 0, () -> enterConstant(Math.PI)),
+
+      new CalculatorButton("x^2", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::square),
+      new CalculatorButton("√x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::squareRoot),
+      new CalculatorButton("1/x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::inverse),
+      new CalculatorButton("x!", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::factorial),
+      new CalculatorButton("÷", R.drawable.dummy_icon, 0, 0, this::divide),
+
+      new CalculatorButton("y^x", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::power),
+      new CalculatorButton("7", R.drawable.dummy_icon, 0, 0, () -> enterDigit('7')),
+      new CalculatorButton("8", R.drawable.dummy_icon, 0, 0, () -> enterDigit('8')),
+      new CalculatorButton("9", R.drawable.dummy_icon, 0, 0, () -> enterDigit('9')),
+      new CalculatorButton("x", R.drawable.dummy_icon, 0, 0, this::multiply),
+
+      new CalculatorButton("±", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::negate),
+      new CalculatorButton("4", R.drawable.dummy_icon, 0, 0, () -> enterDigit('4')),
+      new CalculatorButton("5", R.drawable.dummy_icon, 0, 0, () -> enterDigit('5')),
+      new CalculatorButton("6", R.drawable.dummy_icon, 0, 0, () -> enterDigit('6')),
+      new CalculatorButton("-", R.drawable.dummy_icon, 0, 0, this::subtract),
+
+      new CalculatorButton("⌫", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::backspaceClear),
+      new CalculatorButton("1", R.drawable.dummy_icon, 0, 0, () -> enterDigit('1')),
+      new CalculatorButton("2", R.drawable.dummy_icon, 0, 0, () -> enterDigit('2')),
+      new CalculatorButton("3", R.drawable.dummy_icon, 0, 0, () -> enterDigit('3')),
+      new CalculatorButton("+", R.drawable.dummy_icon, 0, 0, this::add),
+
+      new CalculatorButton("drop", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::dropSwap),
+      new CalculatorButton("0", R.drawable.dummy_icon, 0, 0, () -> enterDigit('0')),
+      new CalculatorButton(".", R.drawable.dummy_icon, 0, 0, () -> enterDigit('.')),
+      new CalculatorButton("EEX", R.drawable.dummy_icon, 0, 0, this::eex),
+      new CalculatorButton("↵", R.drawable.dummy_icon, 0, 0, this::pressEnter)
+  );
+
   private final List<TextView> registers = new ArrayList<>(4);
-
-  private GridView grid;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_calculator);
 
-    registerX = (TextView) findViewById(R.id.registerX);
-    registerY = (TextView) findViewById(R.id.registerY);
-    register1 = (TextView) findViewById(R.id.register1);
-    register2 = (TextView) findViewById(R.id.register2);
-    registers.add(registerX);
-    registers.add(registerY);
-    registers.add(register1);
-    registers.add(register2);
+    registers.add((TextView) findViewById(R.id.registerX));
+    registers.add((TextView) findViewById(R.id.registerY));
+    registers.add((TextView) findViewById(R.id.register1));
+    registers.add((TextView) findViewById(R.id.register2));
 
-    grid = (GridView) findViewById(R.id.button_grid);
-    CustomGrid adapter = new CustomGrid(CalculatorActivity.this, values());
-    grid.setAdapter(adapter);
-    grid.setOnItemClickListener((parent, view, position, id) -> {
-      if (position == SHIFT.getPosition()) {
-        toggleShift();
-      }
-      else if (hexMode) {
-        processHex(position);
-      }
-      else if (shift) {
-        processSecondary(position);
-      }
-      else {
-        processPrimary(position);
-      }
-    });
-
+    GridView grid = (GridView) findViewById(R.id.button_grid);
+    grid.setAdapter(new CustomGrid(this, buttons));
+    grid.setOnItemClickListener((parent, view, position, id) -> processButton(position));
   }
 
-  private void processHex(int position) {
+  private void processButton(int position) {
     try {
-      if (LOG.getPosition() == position) {
-        enterDigit('a');
-      }
-      else if (NATURAL_LOG.getPosition() == position) {
-        enterDigit('b');
-      }
-      else if (SQUARED.getPosition() == position) {
-        enterDigit('c');
-      }
-      else if (SQUARE_ROOT.getPosition() == position) {
-        enterDigit('d');
-      }
-      else if (INVERSE.getPosition() == position) {
-        enterDigit('e');
-      }
-      else if (FACTORIAL.getPosition() == position) {
-        enterDigit('f');
-      }
-      else if (EEX.getPosition() == position) {
-        return;
-      }
-      else {
-        processPrimary(position);
-      }
+      buttons.get(position).press();
     }
-    catch (IllegalStateException e) {
-      Toast.makeText(CalculatorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+    catch (IllegalStateException | NumberFormatException e) {
+      showError(e.getMessage());
     }
   }
 
-  private void processSecondary(int position) {
-    toggleShift();
-    try {
-      // Binary Operations.
-      if (POWER_XTH_ROOT.getPosition() == position) {
-        operation(() -> calculator.xthRootOfY());
-      }
-
-      // Unary Operations.
-      else if (DROP_SWAP.getPosition() == position) {
-        operation(() -> calculator.swap());
-      }
-      else if (LOG.getPosition() == position) {
-        operation(() -> calculator.tenToTheX());
-      }
-      else if (SINE.getPosition() == position) {
-        operation(() -> calculator.asin(radiansMode));
-      }
-      else if (COSINE.getPosition() == position) {
-        operation(() -> calculator.acos(radiansMode));
-      }
-      else if (TANGENT.getPosition() == position) {
-        operation(() -> calculator.atan(radiansMode));
-      }
-      else if (LOG.getPosition() == position) {
-        operation(() -> calculator.tenToTheX());
-      }
-      else if (NATURAL_LOG.getPosition() == position) {
-        operation(() -> calculator.eToTheX());
-      }
-
-      // Stack Operations.
-      else if (BACKSPACE_CLEAR.getPosition() == position) {
-        operation(() -> calculator.clearStack());
-      }
-      else {
-        // If there's no shifted version of this button, just process the primary version of the button.
-        processPrimary(position);
-      }
-    }
-    catch (IllegalStateException e) {
-      Toast.makeText(CalculatorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-  }
-
-  private void processPrimary(int position) {
-    try {
-      // Value Entry.
-      if (ZERO.getPosition() == position) {
-        enterDigit('0');
-      }
-      else if (ONE.getPosition() == position) {
-        enterDigit('1');
-      }
-      else if (TWO.getPosition() == position) {
-        enterDigit('2');
-      }
-      else if (THREE.getPosition() == position) {
-        enterDigit('3');
-      }
-      else if (FOUR.getPosition() == position) {
-        enterDigit('4');
-      }
-      else if (FIVE.getPosition() == position) {
-        enterDigit('5');
-      }
-      else if (SIX.getPosition() == position) {
-        enterDigit('6');
-      }
-      else if (SEVEN.getPosition() == position) {
-        enterDigit('7');
-      }
-      else if (EIGHT.getPosition() == position) {
-        enterDigit('8');
-      }
-      else if (NINE.getPosition() == position) {
-        enterDigit('9');
-      }
-      else if (DECIMAL.getPosition() == position) {
-        if (!decimalEntered) {
-          decimalEntered = true;
-          enterDigit('.');
-        }
-      }
-      else if (EEX.getPosition() == position) {
-        if (!eexEntered) {
-          eexEntered = true;
-          enterDigit('E');
-        }
-      }
-      else if (NEGATION.getPosition() == position) {
-        if (eexEntered) {
-          // Find the E. put a negative after it or remove it.
-          int eIndex = input.indexOf("E");
-          if (eIndex == input.length() - 1 || input.charAt(eIndex + 1) != '-') {
-            input.insert(eIndex + 1, '-');
-          }
-          else {
-            input.deleteCharAt(eIndex + 1);
-          }
-
-          registerX.setText(input);
-        }
-        else {
-          if (input.length() > 0) {
-            if (input.charAt(0) == '-') {
-              input.deleteCharAt(0);
-            }
-            else {
-              input.insert(0, '-');
-            }
-
-            registerX.setText(input);
-          }
-          else {
-            calculator.negate();
-            redrawStack(false);
-          }
-        }
-      }
-      else if (PI_CONSTANTS.getPosition() == position) {
-        if (entryMode) {
-          clearFlags();
-          input.delete(0, input.length());
-        }
-
-        calculator.enter(new BigDecimal(Math.PI));
-        redrawStack(false);
-      }
-
-      // Stack Operations.
-      else if (ENTER.getPosition() == position) {
-        pressEnter();
-      }
-      else if (DROP_SWAP.getPosition() == position) {
-        if (entryMode) {
-          input.delete(0, input.length());
-          clearFlags();
-        }
-        else {
-          calculator.dropOneValue();
-        }
-
-        redrawStack(false);
-      }
-      else if (UNDO.getPosition() == position) {
-        operation(() -> calculator.undo());
-      }
-      else if (BACKSPACE_CLEAR.getPosition() == position) {
-        if (input.length() > 0) {
-          int last = input.length() - 1;
-          if (input.charAt(last) == '.') {
-            decimalEntered = false;
-          }
-          else if (input.charAt(last) == 'E') {
-            eexEntered = false;
-          }
-
-          input.deleteCharAt(last);
-          registerX.setText(input);
-        }
-      }
-
-      // Display Controls.
-      else if (HEX_DECIMAL.getPosition() == position) {
-        toggleHex();
-      }
-      else if (DEGREES_RADIANS.getPosition() == position) {
-        toggleRadians();
-      }
-
-      // Unary Operations.
-      else if (SINE.getPosition() == position) {
-        operation(() -> calculator.sin(radiansMode));
-      }
-      else if (COSINE.getPosition() == position) {
-        operation(() -> calculator.cos(radiansMode));
-      }
-      else if (TANGENT.getPosition() == position) {
-        operation(() -> calculator.tan(radiansMode));
-      }
-      else if (LOG.getPosition() == position) {
-        operation(() -> calculator.log10());
-      }
-      else if (NATURAL_LOG.getPosition() == position) {
-        operation(() -> calculator.naturalLog());
-      }
-      else if (SQUARED.getPosition() == position) {
-        operation(() -> calculator.square());
-      }
-      else if (SQUARE_ROOT.getPosition() == position) {
-        operation(() -> calculator.squareRoot());
-      }
-      else if (INVERSE.getPosition() == position) {
-        operation(() -> calculator.oneOverX());
-      }
-      else if (FACTORIAL.getPosition() == position) {
-        operation(() -> calculator.factorial());
-      }
-
-      // Binary Operations.
-      else if (ADDITION.getPosition() == position) {
-        operation(() -> calculator.add());
-      }
-      else if (SUBTRACT.getPosition() == position) {
-        operation(() -> calculator.subtract());
-      }
-      else if (MULTIPLY.getPosition() == position) {
-        operation(() -> calculator.multiply());
-      }
-      else if (DIVIDE.getPosition() == position) {
-        operation(() -> calculator.divide());
-      }
-      else if (POWER_XTH_ROOT.getPosition() == position) {
-        operation(() -> calculator.power());
-      }
-    }
-    catch (IllegalStateException e) {
-      Toast.makeText(CalculatorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-  }
-
-  private interface Operation {
+  private interface Operator {
     void operate();
   }
 
-  private void operation(Operation operation) {
+  private void executeOperation(Operator operator) {
     if (input.length() > 0) {
       pressEnter();
     }
 
-    operation.operate();
+    operator.operate();
     redrawStack(false);
+  }
+
+  private void add() {
+    executeOperation(calculator::add);
+  }
+
+  private void subtract() {
+    executeOperation(calculator::subtract);
+  }
+
+  private void multiply() {
+    executeOperation(calculator::multiply);
+  }
+
+  private void divide() {
+    executeOperation(calculator::divide);
+  }
+
+  private void sine() {
+    if (shift) {
+      executeOperation(() -> calculator.asin(radiansMode));
+      toggleShift();
+    }
+    else {
+      executeOperation(() -> calculator.sin(radiansMode));
+    }
+  }
+
+  private void cosine() {
+    if (shift) {
+      executeOperation(() -> calculator.acos(radiansMode));
+      toggleShift();
+    }
+    else {
+      executeOperation(() -> calculator.cos(radiansMode));
+    }
+  }
+
+  private void tangent() {
+    if (shift) {
+      executeOperation(() -> calculator.atan(radiansMode));
+      toggleShift();
+    }
+    else {
+      executeOperation(() -> calculator.tan(radiansMode));
+    }
+  }
+
+  private void undo() {
+    executeOperation(calculator::undo);
+  }
+
+  private void log() {
+    if (hexMode) {
+      enterDigit('a');
+    }
+    else if (shift) {
+      executeOperation(calculator::tenToTheX);
+    }
+    else {
+      executeOperation(calculator::log10);
+    }
+  }
+
+  private void ln() {
+    if (hexMode) {
+      enterDigit('b');
+    }
+    else if (shift) {
+      executeOperation(calculator::eToTheX);
+    }
+    else {
+      executeOperation(calculator::naturalLog);
+    }
+  }
+
+
+  private void enterConstant(double value) {
+    if (entryMode) {
+      clearFlags();
+      input.delete(0, input.length());
+    }
+
+    calculator.enter(new BigDecimal(value));
+    redrawStack(false);
+  }
+
+  private void square() {
+    if (hexMode) {
+      enterDigit('c');
+    }
+    else {
+      executeOperation(calculator::square);
+    }
+  }
+
+  private void squareRoot() {
+    if (hexMode) {
+      enterDigit('d');
+    }
+    else {
+      executeOperation(calculator::squareRoot);
+    }
+  }
+
+  private void inverse() {
+    if (hexMode) {
+      enterDigit('e');
+    }
+    else {
+      executeOperation(calculator::oneOverX);
+    }
+  }
+
+  private void factorial() {
+    if (hexMode) {
+      enterDigit('f');
+    }
+    else {
+      executeOperation(calculator::factorial);
+    }
+  }
+
+  private void power() {
+    if (shift) {
+      executeOperation(calculator::xthRootOfY);
+    }
+    else {
+      executeOperation(calculator::power);
+    }
+  }
+
+  private void negate() {
+    if (eexEntered) {
+      // Find the E. put a negative after it or remove it.
+      int eIndex = input.indexOf("E");
+      if (eIndex == input.length() - 1 || input.charAt(eIndex + 1) != '-') {
+        input.insert(eIndex + 1, '-');
+      }
+      else {
+        input.deleteCharAt(eIndex + 1);
+      }
+
+      registers.get(0).setText(input);
+    }
+    else {
+      if (input.length() > 0) {
+        if (input.charAt(0) == '-') {
+          input.deleteCharAt(0);
+        }
+        else {
+          input.insert(0, '-');
+        }
+
+        registers.get(0).setText(input);
+      }
+      else {
+        calculator.negate();
+        redrawStack(false);
+      }
+    }
+  }
+
+  private void backspaceClear() {
+    if (shift) {
+      clearInput();
+      calculator.clearStack();
+      redrawStack(false);
+    }
+    else {
+      if (input.length() > 0) {
+        int last = input.length() - 1;
+        if (input.charAt(last) == '.') {
+          decimalEntered = false;
+        }
+        else if (input.charAt(last) == 'E') {
+          eexEntered = false;
+        }
+
+        input.deleteCharAt(last);
+        registers.get(0).setText(input);
+      }
+    }
+  }
+
+  private void dropSwap() {
+    if (shift) {
+      if (entryMode && input.length() > 0) {
+        pressEnter();
+      }
+
+      calculator.swap();
+    }
+    else {
+      if (entryMode) {
+        clearInput();
+      }
+      else {
+        calculator.dropOneValue();
+      }
+    }
+
+    redrawStack(false);
+  }
+
+  private void eex() {
+    if (!hexMode && !eexEntered) {
+      eexEntered = true;
+      enterDigit('E');
+    }
   }
 
   private void pressEnter() {
     try {
-      clearFlags();
       if (input.length() > 0) {
         if (hexMode) {
           calculator.enter(new BigDecimal(new BigInteger(input.toString(), 16)));
@@ -381,16 +333,16 @@ public class CalculatorActivity extends AppCompatActivity {
           calculator.enter(new BigDecimal(input.toString()));
         }
 
-        redrawStack(false);
-        input.delete(0, input.length());
+        clearInput();
       }
       else {
         calculator.enter(calculator.getTop());
-        redrawStack(false);
       }
+
+      redrawStack(false);
     }
     catch (NumberFormatException e) {
-      Toast.makeText(CalculatorActivity.this, "Invalid Number.", Toast.LENGTH_SHORT).show();
+      showError("Invalid Number.");
     }
   }
 
@@ -401,7 +353,7 @@ public class CalculatorActivity extends AppCompatActivity {
     }
 
     input.append(c);
-    registerX.setText(input);
+    registers.get(0).setText(input);
     redrawStack(true);
   }
 
@@ -409,7 +361,7 @@ public class CalculatorActivity extends AppCompatActivity {
     ImmutableList<BigDecimal> stack = calculator.getStack();
     int offset = showInputLine ? 1 : 0;
     if (showInputLine) {
-      registerX.setText(input);
+      registers.get(0).setText(input);
     }
 
     for (int i = 0; i + offset < registers.size(); i++) {
@@ -423,33 +375,91 @@ public class CalculatorActivity extends AppCompatActivity {
   }
 
   private String formatValue(BigDecimal value) {
+    /*
+    bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
+
+    DecimalFormat df = new DecimalFormat();
+
+    df.setMaximumFractionDigits(2);
+
+    df.setMinimumFractionDigits(0);
+
+    df.setGroupingUsed(false);
+    String result = df.format(bd);
+    */
+    BigDecimal bd = value.setScale(10, BigDecimal.ROUND_HALF_UP);
+    DecimalFormat format = new DecimalFormat();
+    format.setMaximumFractionDigits(10);
+    format.setMinimumFractionDigits(0);
+    format.setGroupingUsed(true);
+
     // TODO Limit to 15 chars.
     if (hexMode) {
       return "0x" + value.toBigInteger().toString(16);
     }
 
-    return value.toString().replaceFirst("\\.0*$", "");
+    return format.format(bd);
+    // return value.toString().replaceFirst("\\.0*$", "");
   }
 
   private void toggleRadians() {
     radiansMode = !radiansMode;
-    // TODO: Change the button labels.
+    setRadiansButtonImage();
+  }
+
+  private void setRadiansButtonImage() {
+    if (radiansMode) {
+      radiansButton.updateImage(R.drawable.radians_icon);
+    }
+    else {
+      radiansButton.updateImage(R.drawable.degrees_icon);
+    }
   }
 
   private void toggleHex() {
-    // TODO: Change the button labels.
     hexMode = !hexMode;
     redrawStack(entryMode);
+    updateButtonImages();
   }
 
   private void toggleShift() {
     shift = !shift;
-    // TODO: Change the button labels.
+    updateButtonImages();
+  }
+
+  private void updateButtonImages() {
+    CalculatorButton.ImageState imageState = CalculatorButton.ImageState.BASIC;
+    if (hexMode) {
+      imageState = CalculatorButton.ImageState.HEX;
+    }
+    else if (shift) {
+      imageState = CalculatorButton.ImageState.SHIFT;
+    }
+
+    for (CalculatorButton button : buttons) {
+      button.updateImageView(imageState);
+    }
+
+    setRadiansButtonImage();
+  }
+
+  private void showError(String message) {
+    int[] location = new int[2];
+    registers.get(1).getLocationOnScreen(location);
+
+    Toast toast = Toast.makeText(CalculatorActivity.this, message, Toast.LENGTH_SHORT);
+    toast.setGravity(TOP, 0, location[1]);
+    toast.show();
   }
 
   private void clearFlags() {
     entryMode = false;
     decimalEntered = false;
     eexEntered = false;
+  }
+
+  private void clearInput() {
+    input.delete(0, input.length());
+    clearFlags();
   }
 }

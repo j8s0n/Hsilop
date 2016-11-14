@@ -391,16 +391,12 @@ class Calculator {
     private final ActionType actionType;
     private final BigDecimal value;
 
-    public HistoryEntry(ActionType actionType, BigDecimal value) {
+    HistoryEntry(ActionType actionType, BigDecimal value) {
       this.actionType = actionType;
       this.value = value;
     }
 
-    public ActionType getActionType() {
-      return actionType;
-    }
-
-    public BigDecimal getValue() {
+    BigDecimal getValue() {
       return value;
     }
   }
