@@ -2,7 +2,7 @@ package com.jasonmajors.hsilop;
 
 import android.widget.ImageView;
 
-class CalculatorButton {
+class Button {
   enum ImageState {
     BASIC,
     SHIFT,
@@ -20,7 +20,7 @@ class CalculatorButton {
   private final ButtonAction action;
   private ImageView imageView;
 
-  CalculatorButton(String name, int basicImageId, int shiftedImageId, int hexModeImageId, ButtonAction action) {
+  Button(String name, int basicImageId, int shiftedImageId, int hexModeImageId, ButtonAction action) {
     this.name = name;
     this.basicImageId = basicImageId;
     this.shiftedImageId = shiftedImageId;

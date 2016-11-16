@@ -16,6 +16,7 @@ import java.util.List;
 import static android.view.Gravity.TOP;
 
 public class CalculatorActivity extends AppCompatActivity {
+  private static int DISPLAY_WIDTH = 20;
   boolean shift = false;
   boolean decimalEntered = false;
   boolean eexEntered = false;
@@ -25,51 +26,51 @@ public class CalculatorActivity extends AppCompatActivity {
 
   private final StringBuilder input = new StringBuilder();
   private final Calculator calculator = Calculator.getInstance();
-  private final CalculatorButton radiansButton =
-      new CalculatorButton("rad", R.drawable.dummy_icon, 0, 0, this::toggleRadians);
+  private final Button radiansButton =
+      new Button("rad", R.drawable.radians_icon, 0, 0, this::toggleRadians);
 
-  private ArrayList<CalculatorButton> buttons = Lists.newArrayList(
-      new CalculatorButton("^", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::toggleShift),
-      new CalculatorButton("sin", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::sine),
-      new CalculatorButton("cos", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::cosine),
-      new CalculatorButton("tan", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::tangent),
-      new CalculatorButton("undo", R.drawable.dummy_icon, 0, 0, this::undo),
+  private ArrayList<Button> buttons = Lists.newArrayList(
+      new Button("^", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::toggleShift),
+      new Button("sin", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::sine),
+      new Button("cos", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::cosine),
+      new Button("tan", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::tangent),
+      new Button("undo", R.drawable.dummy_icon, 0, 0, this::undo),
 
-      new CalculatorButton("log", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::log),
-      new CalculatorButton("ln", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::ln),
-      new CalculatorButton("0x", R.drawable.dummy_icon, 0, 0, this::toggleHex),
+      new Button("log", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::log),
+      new Button("ln", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::ln),
+      new Button("0x", R.drawable.dummy_icon, 0, 0, this::toggleHex),
       radiansButton,
-      new CalculatorButton("π", R.drawable.dummy_icon, 0, 0, () -> enterConstant(Math.PI)),
+      new Button("π", R.drawable.dummy_icon, 0, 0, () -> enterConstant(Math.PI)),
 
-      new CalculatorButton("x^2", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::square),
-      new CalculatorButton("√x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::squareRoot),
-      new CalculatorButton("1/x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::inverse),
-      new CalculatorButton("x!", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::factorial),
-      new CalculatorButton("÷", R.drawable.dummy_icon, 0, 0, this::divide),
+      new Button("x^2", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::square),
+      new Button("√x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::squareRoot),
+      new Button("1/x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::inverse),
+      new Button("x!", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::factorial),
+      new Button("÷", R.drawable.dummy_icon, 0, 0, this::divide),
 
-      new CalculatorButton("y^x", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::power),
-      new CalculatorButton("7", R.drawable.dummy_icon, 0, 0, () -> enterDigit('7')),
-      new CalculatorButton("8", R.drawable.dummy_icon, 0, 0, () -> enterDigit('8')),
-      new CalculatorButton("9", R.drawable.dummy_icon, 0, 0, () -> enterDigit('9')),
-      new CalculatorButton("x", R.drawable.dummy_icon, 0, 0, this::multiply),
+      new Button("y^x", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::power),
+      new Button("7", R.drawable.dummy_icon, 0, 0, () -> enterDigit('7')),
+      new Button("8", R.drawable.dummy_icon, 0, 0, () -> enterDigit('8')),
+      new Button("9", R.drawable.dummy_icon, 0, 0, () -> enterDigit('9')),
+      new Button("x", R.drawable.dummy_icon, 0, 0, this::multiply),
 
-      new CalculatorButton("±", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::negate),
-      new CalculatorButton("4", R.drawable.dummy_icon, 0, 0, () -> enterDigit('4')),
-      new CalculatorButton("5", R.drawable.dummy_icon, 0, 0, () -> enterDigit('5')),
-      new CalculatorButton("6", R.drawable.dummy_icon, 0, 0, () -> enterDigit('6')),
-      new CalculatorButton("-", R.drawable.dummy_icon, 0, 0, this::subtract),
+      new Button("±", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::negate),
+      new Button("4", R.drawable.dummy_icon, 0, 0, () -> enterDigit('4')),
+      new Button("5", R.drawable.dummy_icon, 0, 0, () -> enterDigit('5')),
+      new Button("6", R.drawable.dummy_icon, 0, 0, () -> enterDigit('6')),
+      new Button("-", R.drawable.dummy_icon, 0, 0, this::subtract),
 
-      new CalculatorButton("⌫", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::backspaceClear),
-      new CalculatorButton("1", R.drawable.dummy_icon, 0, 0, () -> enterDigit('1')),
-      new CalculatorButton("2", R.drawable.dummy_icon, 0, 0, () -> enterDigit('2')),
-      new CalculatorButton("3", R.drawable.dummy_icon, 0, 0, () -> enterDigit('3')),
-      new CalculatorButton("+", R.drawable.dummy_icon, 0, 0, this::add),
+      new Button("⌫", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::backspaceClear),
+      new Button("1", R.drawable.dummy_icon, 0, 0, () -> enterDigit('1')),
+      new Button("2", R.drawable.dummy_icon, 0, 0, () -> enterDigit('2')),
+      new Button("3", R.drawable.dummy_icon, 0, 0, () -> enterDigit('3')),
+      new Button("+", R.drawable.dummy_icon, 0, 0, this::add),
 
-      new CalculatorButton("drop", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::dropSwap),
-      new CalculatorButton("0", R.drawable.dummy_icon, 0, 0, () -> enterDigit('0')),
-      new CalculatorButton(".", R.drawable.dummy_icon, 0, 0, () -> enterDigit('.')),
-      new CalculatorButton("EEX", R.drawable.dummy_icon, 0, 0, this::eex),
-      new CalculatorButton("↵", R.drawable.dummy_icon, 0, 0, this::pressEnter)
+      new Button("drop", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::dropSwap),
+      new Button("0", R.drawable.dummy_icon, 0, 0, () -> enterDigit('0')),
+      new Button(".", R.drawable.dummy_icon, 0, 0, () -> enterDigit('.')),
+      new Button("EEX", R.drawable.dummy_icon, 0, 0, this::eex),
+      new Button("↵", R.drawable.dummy_icon, 0, 0, this::pressEnter)
   );
 
   private final List<TextView> registers = new ArrayList<>(4);
@@ -255,7 +256,7 @@ public class CalculatorActivity extends AppCompatActivity {
         input.deleteCharAt(eIndex + 1);
       }
 
-      registers.get(0).setText(input);
+      displayInputLine();
     }
     else {
       if (input.length() > 0) {
@@ -266,7 +267,7 @@ public class CalculatorActivity extends AppCompatActivity {
           input.insert(0, '-');
         }
 
-        registers.get(0).setText(input);
+        displayInputLine();
       }
       else {
         calculator.negate();
@@ -293,7 +294,7 @@ public class CalculatorActivity extends AppCompatActivity {
         }
 
         input.deleteCharAt(last);
-        registers.get(0).setText(input);
+        displayInputLine();
       }
     }
   }
@@ -356,7 +357,7 @@ public class CalculatorActivity extends AppCompatActivity {
     }
 
     input.append(c);
-    registers.get(0).setText(input);
+    displayInputLine();
     redrawStack(true);
   }
 
@@ -364,16 +365,53 @@ public class CalculatorActivity extends AppCompatActivity {
     ImmutableList<Number> stack = calculator.getStack();
     int offset = showInputLine ? 1 : 0;
     if (showInputLine) {
-      registers.get(0).setText(input);
+      displayInputLine();
     }
 
     for (int i = 0; i + offset < registers.size(); i++) {
       if (stack.size() > i) {
-        registers.get(i + offset).setText(stack.get(i).toString(hexMode));
+        registers.get(i + offset).setText(formatNumber(stack.get(i).toString(hexMode)));
       }
       else {
         registers.get(i + offset).setText("");
       }
+    }
+  }
+
+  private String formatNumber(String number) {
+    if (hexMode) {
+      if (number.length() <= DISPLAY_WIDTH) {
+        return number;
+      }
+      else {
+        // What to do????
+        return number;
+      }
+    }
+    if (number.length() <= DISPLAY_WIDTH) {
+      number = number.replaceFirst("\\.0+", "");
+      return number;
+    }
+    else {
+      int eIndex = number.indexOf('E');
+      if (eIndex == -1) {
+        return number.substring(0, DISPLAY_WIDTH);
+      }
+      else {
+        int extraCount = number.length() - DISPLAY_WIDTH;
+        int exponentLength = number.length() - eIndex;
+        int length = number.length() - extraCount - exponentLength;
+        return number.substring(0, length) + number.substring(eIndex);
+      }
+    }
+  }
+
+  private void displayInputLine() {
+    if (input.length() < DISPLAY_WIDTH) {
+      registers.get(0).setText(input);
+    }
+    else {
+      registers.get(0).setText(input.substring(input.length() - DISPLAY_WIDTH));
     }
   }
 
@@ -403,15 +441,15 @@ public class CalculatorActivity extends AppCompatActivity {
   }
 
   private void updateButtonImages() {
-    CalculatorButton.ImageState imageState = CalculatorButton.ImageState.BASIC;
+    Button.ImageState imageState = Button.ImageState.BASIC;
     if (hexMode) {
-      imageState = CalculatorButton.ImageState.HEX;
+      imageState = Button.ImageState.HEX;
     }
     else if (shift) {
-      imageState = CalculatorButton.ImageState.SHIFT;
+      imageState = Button.ImageState.SHIFT;
     }
 
-    for (CalculatorButton button : buttons) {
+    for (Button button : buttons) {
       button.updateImageView(imageState);
     }
 

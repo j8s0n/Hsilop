@@ -3,11 +3,11 @@ package com.jasonmajors.hsilop;
 import org.jetbrains.annotations.NotNull;
 
 class Number {
+  private static final double CLOSE_ENOUGH = 0.000001;
   static Number ZERO = new Number(0.0);
   static Number ONE = new Number(1.0);
   static Number NEGATIVE_ONE = new Number(-1.0);
   private double value;
-  private static final double CLOSE_ENOUGH = 0.000000001;
 
   private Number(double value) {
     this.value = value;
@@ -43,7 +43,8 @@ class Number {
 
   int compareTo(Number rhs) {
     double diff = value - rhs.value;
-    if (Math.abs(diff) < CLOSE_ENOUGH) {
+    double average = (value + rhs.value) / 2.0;
+    if (Math.abs(diff) / average < CLOSE_ENOUGH) {
       return 0;
     }
     else if (value < rhs.value) {
@@ -60,11 +61,11 @@ class Number {
   }
 
   boolean isInteger() {
-    return (long)value == value;
+    return (long) value == value;
   }
 
   int intValue() {
-    return (int)value;
+    return (int) value;
   }
 
   @NotNull
@@ -81,7 +82,7 @@ class Number {
   String toString(boolean hexMode) {
     if (hexMode) {
       String neg = (value < 0) ? "-" : "";
-      String hex = Integer.toHexString((int)Math.abs(value));
+      String hex = Integer.toHexString((int) Math.abs(value));
       return "0x" + neg + hex;
     }
     else {
