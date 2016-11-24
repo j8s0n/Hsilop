@@ -1,9 +1,9 @@
 package com.jasonmajors.hsilop;
 
-import android.widget.ImageView;
+import android.widget.TextView;
 
 class Button {
-  enum ImageState {
+  enum ButtonState {
     BASIC,
     SHIFT,
     HEX
@@ -14,18 +14,23 @@ class Button {
   }
 
   private final String name;
-  private final int basicImageId;
-  private final int shiftedImageId;
-  private final int hexModeImageId;
+  private final int basicTextId;
+  private final int shiftedTextId;
+  private final int hexModeTextId;
   private final ButtonAction action;
-  private ImageView imageView;
+  private final StringResourceProvider stringProvider;
 
-  Button(String name, int basicImageId, int shiftedImageId, int hexModeImageId, ButtonAction action) {
+  //private ImageView imageView;
+  private TextView textView;
+
+  Button(String name, int basicTextId, int shiftedTextId, int hexModeTextId, ButtonAction action,
+         StringResourceProvider stringProvider) {
     this.name = name;
-    this.basicImageId = basicImageId;
-    this.shiftedImageId = shiftedImageId;
-    this.hexModeImageId = hexModeImageId;
+    this.basicTextId = basicTextId;
+    this.shiftedTextId = shiftedTextId;
+    this.hexModeTextId = hexModeTextId;
     this.action = action;
+    this.stringProvider = stringProvider;
   }
 
   void press() {
@@ -36,27 +41,27 @@ class Button {
     return name;
   }
 
-  int getBasicImageId() {
-    return basicImageId;
+  int getBasicTextId() {
+    return basicTextId;
   }
 
-  void setImageView(ImageView imageView) {
-    this.imageView = imageView;
+  public void setTextView(TextView textView) {
+    this.textView = textView;
   }
 
-  void updateImage(int imageId) {
-    imageView.setImageResource(imageId);
+  void updateText(int textId) {
+    textView.setText(stringProvider.getStringById(textId));
   }
 
-  void updateImageView(ImageState state) {
-    if (state == ImageState.BASIC) {
-      imageView.setImageResource(basicImageId);
+  void updateTextView(ButtonState state) {
+    if (state == ButtonState.BASIC) {
+      textView.setText(stringProvider.getStringById(basicTextId));
     }
-    else if (state == ImageState.SHIFT && shiftedImageId != 0) {
-      imageView.setImageResource(shiftedImageId);
+    else if (state == ButtonState.SHIFT && shiftedTextId != 0) {
+      textView.setText(stringProvider.getStringById(shiftedTextId));
     }
-    else if (state == ImageState.HEX && hexModeImageId != 0) {
-      imageView.setImageResource(hexModeImageId);
+    else if (state == ButtonState.HEX && hexModeTextId != 0) {
+      textView.setText(stringProvider.getStringById(hexModeTextId));
     }
   }
 

@@ -15,7 +15,7 @@ import java.util.List;
 
 import static android.view.Gravity.TOP;
 
-public class CalculatorActivity extends AppCompatActivity {
+public class CalculatorActivity extends AppCompatActivity implements StringResourceProvider {
   private static int DISPLAY_WIDTH = 20;
   boolean shift = false;
   boolean decimalEntered = false;
@@ -27,50 +27,50 @@ public class CalculatorActivity extends AppCompatActivity {
   private final StringBuilder input = new StringBuilder();
   private final Calculator calculator = Calculator.getInstance();
   private final Button radiansButton =
-      new Button("rad", R.drawable.radians_icon, 0, 0, this::toggleRadians);
+      new Button("rad", R.string.radians_label, 0, 0, this::toggleRadians, this);
 
   private ArrayList<Button> buttons = Lists.newArrayList(
-      new Button("^", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::toggleShift),
-      new Button("sin", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::sine),
-      new Button("cos", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::cosine),
-      new Button("tan", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::tangent),
-      new Button("undo", R.drawable.dummy_icon, 0, 0, this::undo),
+      new Button("⇧", R.string.shift, R.string.unshift, 0, this::toggleShift, this),
+      new Button("sin", R.string.sin, R.string.asin, 0, this::sine, this),
+      new Button("cos", R.string.cos, R.string.acos, 0, this::cosine, this),
+      new Button("tan", R.string.tan, R.string.atan, 0, this::tangent, this),
+      new Button("undo", R.string.undo, 0, 0, this::undo, this),
 
-      new Button("log", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::log),
-      new Button("ln", R.drawable.dummy_icon, R.drawable.dummy_icon, R.drawable.dummy_icon, this::ln),
-      new Button("0x", R.drawable.dummy_icon, 0, 0, this::toggleHex),
+      new Button("log", R.string.log, R.string.ten_to_the_x, R.string.hex_a, this::log, this),
+      new Button("ln", R.string.ln, R.string.e_to_the_x, R.string.hex_b, this::ln, this),
+      new Button("0x", R.string.hex, 0, R.string.decimal, this::toggleHex, this),
       radiansButton,
-      new Button("π", R.drawable.dummy_icon, 0, 0, () -> enterConstant(Math.PI)),
+      new Button("π", R.string.pi, 0, 0, () -> enterConstant(Math.PI), this),
 
-      new Button("x^2", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::square),
-      new Button("√x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::squareRoot),
-      new Button("1/x", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::inverse),
-      new Button("x!", R.drawable.dummy_icon, 0, R.drawable.dummy_icon, this::factorial),
-      new Button("÷", R.drawable.dummy_icon, 0, 0, this::divide),
+      new Button("x^2", R.string.x_squared, 0, R.string.hex_c, this::square, this),
+      new Button("√x", R.string.square_root, 0, R.string.hex_d, this::squareRoot, this),
+      new Button("1/x", R.string.one_over_x, 0, R.string.hex_e, this::inverse, this),
+      new Button("x!", R.string.factorial, 0, R.string.hex_f, this::factorial, this),
+      new Button("÷", R.string.divide, 0, 0, this::divide, this),
 
-      new Button("y^x", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::power),
-      new Button("7", R.drawable.dummy_icon, 0, 0, () -> enterDigit('7')),
-      new Button("8", R.drawable.dummy_icon, 0, 0, () -> enterDigit('8')),
-      new Button("9", R.drawable.dummy_icon, 0, 0, () -> enterDigit('9')),
-      new Button("x", R.drawable.dummy_icon, 0, 0, this::multiply),
+      new Button("y^x", R.string.y_to_the_x, R.string.xth_root_of_y, 0, this::power, this),
+      new Button("7", R.string.seven, 0, 0, () -> enterDigit('7'), this),
+      new Button("8", R.string.eight, 0, 0, () -> enterDigit('8'), this),
+      new Button("9", R.string.nine, 0, 0, () -> enterDigit('9'), this),
+      new Button("x", R.string.multiply, 0, 0, this::multiply, this),
 
-      new Button("±", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::negate),
-      new Button("4", R.drawable.dummy_icon, 0, 0, () -> enterDigit('4')),
-      new Button("5", R.drawable.dummy_icon, 0, 0, () -> enterDigit('5')),
-      new Button("6", R.drawable.dummy_icon, 0, 0, () -> enterDigit('6')),
-      new Button("-", R.drawable.dummy_icon, 0, 0, this::subtract),
+      new Button("±", R.string.negate, 0, 0, this::negate, this),
+      new Button("4", R.string.four, 0, 0, () -> enterDigit('4'), this),
+      new Button("5", R.string.five, 0, 0, () -> enterDigit('5'), this),
+      new Button("6", R.string.six, 0, 0, () -> enterDigit('6'), this),
+      new Button("-", R.string.subtract, 0, 0, this::subtract, this),
 
-      new Button("⌫", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::backspaceClear),
-      new Button("1", R.drawable.dummy_icon, 0, 0, () -> enterDigit('1')),
-      new Button("2", R.drawable.dummy_icon, 0, 0, () -> enterDigit('2')),
-      new Button("3", R.drawable.dummy_icon, 0, 0, () -> enterDigit('3')),
-      new Button("+", R.drawable.dummy_icon, 0, 0, this::add),
+      new Button("⌫", R.string.backspace, R.string.clear, 0, this::backspaceClear, this),
+      new Button("1", R.string.one, 0, 0, () -> enterDigit('1'), this),
+      new Button("2", R.string.two, 0, 0, () -> enterDigit('2'), this),
+      new Button("3", R.string.three, 0, 0, () -> enterDigit('3'), this),
+      new Button("+", R.string.add, 0, 0, this::add, this),
 
-      new Button("drop", R.drawable.dummy_icon, R.drawable.dummy_icon, 0, this::dropSwap),
-      new Button("0", R.drawable.dummy_icon, 0, 0, () -> enterDigit('0')),
-      new Button(".", R.drawable.dummy_icon, 0, 0, () -> enterDigit('.')),
-      new Button("EEX", R.drawable.dummy_icon, 0, 0, this::eex),
-      new Button("↵", R.drawable.dummy_icon, 0, 0, this::pressEnter)
+      new Button("drop", R.string.drop, R.string.swap, 0, this::dropSwap, this),
+      new Button("0", R.string.zero, 0, 0, () -> enterDigit('0'), this),
+      new Button(".", R.string.decimal_point, 0, 0, () -> enterDecimal(), this),
+      new Button("EEX", R.string.eex, 0, 0, this::eex, this),
+      new Button("↵", R.string.enter, 0, 0, this::pressEnter, this)
   );
 
   private final List<TextView> registers = new ArrayList<>(4);
@@ -97,6 +97,11 @@ public class CalculatorActivity extends AppCompatActivity {
     catch (IllegalStateException | NumberFormatException e) {
       showError(e.getMessage());
     }
+  }
+
+  @Override
+  public CharSequence getStringById(int id) {
+    return getText(id);
   }
 
   private interface Operator {
@@ -361,6 +366,13 @@ public class CalculatorActivity extends AppCompatActivity {
     redrawStack(true);
   }
 
+  private void enterDecimal() {
+    if (!decimalEntered) {
+      decimalEntered = true;
+      enterDigit('.');
+    }
+  }
+
   private void redrawStack(boolean showInputLine) {
     ImmutableList<Number> stack = calculator.getStack();
     int offset = showInputLine ? 1 : 0;
@@ -417,43 +429,43 @@ public class CalculatorActivity extends AppCompatActivity {
 
   private void toggleRadians() {
     radiansMode = !radiansMode;
-    setRadiansButtonImage();
+    setRadiansButtonLabel();
   }
 
-  private void setRadiansButtonImage() {
+  private void setRadiansButtonLabel() {
     if (radiansMode) {
-      radiansButton.updateImage(R.drawable.radians_icon);
+      radiansButton.updateText(R.string.radians_label);
     }
     else {
-      radiansButton.updateImage(R.drawable.degrees_icon);
+      radiansButton.updateText(R.string.degrees_label);
     }
   }
 
   private void toggleHex() {
     hexMode = !hexMode;
     redrawStack(entryMode);
-    updateButtonImages();
+    updateButtonLabels();
   }
 
   private void toggleShift() {
     shift = !shift;
-    updateButtonImages();
+    updateButtonLabels();
   }
 
-  private void updateButtonImages() {
-    Button.ImageState imageState = Button.ImageState.BASIC;
+  private void updateButtonLabels() {
+    Button.ButtonState buttonState = Button.ButtonState.BASIC;
     if (hexMode) {
-      imageState = Button.ImageState.HEX;
+      buttonState = Button.ButtonState.HEX;
     }
     else if (shift) {
-      imageState = Button.ImageState.SHIFT;
+      buttonState = Button.ButtonState.SHIFT;
     }
 
     for (Button button : buttons) {
-      button.updateImageView(imageState);
+      button.updateTextView(buttonState);
     }
 
-    setRadiansButtonImage();
+    setRadiansButtonLabel();
   }
 
   private void showError(String message) {
