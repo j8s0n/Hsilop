@@ -1,10 +1,11 @@
 package com.jasonmajors.hsilop;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -13,67 +14,76 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.Gravity.TOP;
-
-public class CalculatorActivity extends AppCompatActivity implements StringResourceProvider {
+public class CalculatorActivity extends AppCompatActivity implements ResourceProvider {
   private static int DISPLAY_WIDTH = 20;
-  boolean shift = false;
-  boolean decimalEntered = false;
-  boolean eexEntered = false;
-  boolean entryMode = false;
-  boolean hexMode = false;
-  boolean radiansMode = true;
+  private boolean shift = false;
+  private boolean decimalEntered = false;
+  private boolean eexEntered = false;
+  private boolean entryMode = false;
+  private boolean hexMode = false;
+  private boolean radiansMode = true;
+
+  private static int buttonRowHeight;
+
+  private final List<TextView> registers = new ArrayList<>(4);
 
   private final StringBuilder input = new StringBuilder();
   private final Calculator calculator = Calculator.getInstance();
   private final Button radiansButton =
-      new Button("rad", R.string.radians_label, 0, 0, this::toggleRadians, this);
+      new Button(R.string.radians_label, 0, 0, this::toggleRadians, this);
 
   private ArrayList<Button> buttons = Lists.newArrayList(
-      new Button("⇧", R.string.shift, R.string.unshift, 0, this::toggleShift, this),
-      new Button("sin", R.string.sin, R.string.asin, 0, this::sine, this),
-      new Button("cos", R.string.cos, R.string.acos, 0, this::cosine, this),
-      new Button("tan", R.string.tan, R.string.atan, 0, this::tangent, this),
-      new Button("undo", R.string.undo, 0, 0, this::undo, this),
+      new Button(R.string.shift, R.string.unshift, 0, this::toggleShift, this),
+      new Button(R.string.sin, R.string.asin, 0, this::sine, this),
+      new Button(R.string.cos, R.string.acos, 0, this::cosine, this),
+      new Button(R.string.tan, R.string.atan, 0, this::tangent, this),
+      new Button(R.string.undo, 0, 0, this::undo, this),
 
-      new Button("log", R.string.log, R.string.ten_to_the_x, R.string.hex_a, this::log, this),
-      new Button("ln", R.string.ln, R.string.e_to_the_x, R.string.hex_b, this::ln, this),
-      new Button("0x", R.string.hex, 0, R.string.decimal, this::toggleHex, this),
+      new Button(R.string.log, R.string.ten_to_the_x, R.string.hex_a, this::log, this),
+      new Button(R.string.ln, R.string.e_to_the_x, R.string.hex_b, this::ln, this),
+      new Button(R.string.hex, 0, R.string.decimal, this::toggleHex, this),
       radiansButton,
-      new Button("π", R.string.pi, 0, 0, () -> enterConstant(Math.PI), this),
+      new Button(R.string.pi, 0, 0, () -> enterConstant(Math.PI), this),
 
-      new Button("x^2", R.string.x_squared, 0, R.string.hex_c, this::square, this),
-      new Button("√x", R.string.square_root, 0, R.string.hex_d, this::squareRoot, this),
-      new Button("1/x", R.string.one_over_x, 0, R.string.hex_e, this::inverse, this),
-      new Button("x!", R.string.factorial, 0, R.string.hex_f, this::factorial, this),
-      new Button("÷", R.string.divide, 0, 0, this::divide, this),
+      new Button(R.string.x_squared, 0, R.string.hex_c, this::square, this),
+      new Button(R.string.square_root, 0, R.string.hex_d, this::squareRoot, this),
+      new Button(R.string.one_over_x, 0, R.string.hex_e, this::inverse, this),
+      new Button(R.string.factorial, 0, R.string.hex_f, this::factorial, this),
+      new Button(R.string.divide, 0, 0, this::divide, this),
 
-      new Button("y^x", R.string.y_to_the_x, R.string.xth_root_of_y, 0, this::power, this),
-      new Button("7", R.string.seven, 0, 0, () -> enterDigit('7'), this),
-      new Button("8", R.string.eight, 0, 0, () -> enterDigit('8'), this),
-      new Button("9", R.string.nine, 0, 0, () -> enterDigit('9'), this),
-      new Button("x", R.string.multiply, 0, 0, this::multiply, this),
+      new Button(R.string.y_to_the_x, R.string.xth_root_of_y, 0, this::power, this),
+      new Button(R.string.seven, 0, 0, () -> enterDigit('7'), this),
+      new Button(R.string.eight, 0, 0, () -> enterDigit('8'), this),
+      new Button(R.string.nine, 0, 0, () -> enterDigit('9'), this),
+      new Button(R.string.multiply, 0, 0, this::multiply, this),
 
-      new Button("±", R.string.negate, 0, 0, this::negate, this),
-      new Button("4", R.string.four, 0, 0, () -> enterDigit('4'), this),
-      new Button("5", R.string.five, 0, 0, () -> enterDigit('5'), this),
-      new Button("6", R.string.six, 0, 0, () -> enterDigit('6'), this),
-      new Button("-", R.string.subtract, 0, 0, this::subtract, this),
+      new Button(R.string.negate, 0, 0, this::negate, this),
+      new Button(R.string.four, 0, 0, () -> enterDigit('4'), this),
+      new Button(R.string.five, 0, 0, () -> enterDigit('5'), this),
+      new Button(R.string.six, 0, 0, () -> enterDigit('6'), this),
+      new Button(R.string.subtract, 0, 0, this::subtract, this),
 
-      new Button("⌫", R.string.backspace, R.string.clear, 0, this::backspaceClear, this),
-      new Button("1", R.string.one, 0, 0, () -> enterDigit('1'), this),
-      new Button("2", R.string.two, 0, 0, () -> enterDigit('2'), this),
-      new Button("3", R.string.three, 0, 0, () -> enterDigit('3'), this),
-      new Button("+", R.string.add, 0, 0, this::add, this),
+      new Button(R.string.backspace, R.string.clear, 0, this::backspaceClear, this),
+      new Button(R.string.one, 0, 0, () -> enterDigit('1'), this),
+      new Button(R.string.two, 0, 0, () -> enterDigit('2'), this),
+      new Button(R.string.three, 0, 0, () -> enterDigit('3'), this),
+      new Button(R.string.add, 0, 0, this::add, this),
 
-      new Button("drop", R.string.drop, R.string.swap, 0, this::dropSwap, this),
-      new Button("0", R.string.zero, 0, 0, () -> enterDigit('0'), this),
-      new Button(".", R.string.decimal_point, 0, 0, () -> enterDecimal(), this),
-      new Button("EEX", R.string.eex, 0, 0, this::eex, this),
-      new Button("↵", R.string.enter, 0, 0, this::pressEnter, this)
+      new Button(R.string.drop, R.string.swap, 0, this::dropSwap, this),
+      new Button(R.string.zero, 0, 0, () -> enterDigit('0'), this),
+      new Button(R.string.decimal_point, 0, 0, this::enterDecimal, this),
+      new Button(R.string.eex, 0, 0, this::eex, this),
+      new Button(R.string.enter, 0, 0, this::pressEnter, this)
   );
 
-  private final List<TextView> registers = new ArrayList<>(4);
+  @Override
+  protected void onResume() {
+    super.onResume();
+    DisplayMetrics metrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+    buttonRowHeight = (metrics.heightPixels - 800) / 7;
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +100,17 @@ public class CalculatorActivity extends AppCompatActivity implements StringResou
     grid.setOnItemClickListener((parent, view, position, id) -> processButton(position));
   }
 
+  // TODO!!!! Make a cell height getter and call that from the inflater.
+  static int getButtonRowHeight() {
+    return buttonRowHeight;
+  }
+
   private void processButton(int position) {
     try {
       buttons.get(position).press();
     }
     catch (IllegalStateException | NumberFormatException e) {
+      clearInput();
       showError(e.getMessage());
     }
   }
@@ -351,6 +367,7 @@ public class CalculatorActivity extends AppCompatActivity implements StringResou
       redrawStack(false);
     }
     catch (NumberFormatException e) {
+      clearInput();
       showError("Invalid Number.");
     }
   }
@@ -401,7 +418,7 @@ public class CalculatorActivity extends AppCompatActivity implements StringResou
       }
     }
     if (number.length() <= DISPLAY_WIDTH) {
-      number = number.replaceFirst("\\.0+", "");
+      number = number.replaceFirst("\\.0+$", "");
       return number;
     }
     else {
@@ -469,12 +486,15 @@ public class CalculatorActivity extends AppCompatActivity implements StringResou
   }
 
   private void showError(String message) {
-    int[] location = new int[2];
-    registers.get(1).getLocationOnScreen(location);
+    TextView registerX = registers.get(0);
+    registerX.setTextAppearance(R.style.Error);
+    registerX.setText(message);
 
-    Toast toast = Toast.makeText(CalculatorActivity.this, message, Toast.LENGTH_SHORT);
-    toast.setGravity(TOP, 0, location[1]);
-    toast.show();
+    final Handler handler = new Handler();
+    handler.postDelayed(() -> {
+      registerX.setTextAppearance(R.style.Registers);
+      redrawStack(false);
+    }, 800);
   }
 
   private void clearFlags() {

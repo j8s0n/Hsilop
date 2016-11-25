@@ -13,60 +13,48 @@ class Button {
     void operate();
   }
 
-  private final String name;
-  private final int basicTextId;
-  private final int shiftedTextId;
-  private final int hexModeTextId;
+  private final int basicId;
+  private final int shiftedId;
+  private final int hexModeId;
   private final ButtonAction action;
-  private final StringResourceProvider stringProvider;
+  private final ResourceProvider resourceProvider;
 
-  //private ImageView imageView;
   private TextView textView;
 
-  Button(String name, int basicTextId, int shiftedTextId, int hexModeTextId, ButtonAction action,
-         StringResourceProvider stringProvider) {
-    this.name = name;
-    this.basicTextId = basicTextId;
-    this.shiftedTextId = shiftedTextId;
-    this.hexModeTextId = hexModeTextId;
+  Button(int basicId, int shiftedId, int hexModeId, ButtonAction action, ResourceProvider resourceProvider) {
+    this.basicId = basicId;
+    this.shiftedId = shiftedId;
+    this.hexModeId = hexModeId;
     this.action = action;
-    this.stringProvider = stringProvider;
+    this.resourceProvider = resourceProvider;
   }
 
   void press() {
     action.operate();
   }
 
-  String getName() {
-    return name;
-  }
-
-  int getBasicTextId() {
-    return basicTextId;
-  }
-
-  public void setTextView(TextView textView) {
+  void setTextView(TextView textView) {
     this.textView = textView;
   }
 
   void updateText(int textId) {
-    textView.setText(stringProvider.getStringById(textId));
+    textView.setText(resourceProvider.getStringById(textId));
   }
 
   void updateTextView(ButtonState state) {
     if (state == ButtonState.BASIC) {
-      textView.setText(stringProvider.getStringById(basicTextId));
+      textView.setText(resourceProvider.getStringById(basicId));
     }
-    else if (state == ButtonState.SHIFT && shiftedTextId != 0) {
-      textView.setText(stringProvider.getStringById(shiftedTextId));
+    else if (state == ButtonState.SHIFT && shiftedId != 0) {
+      textView.setText(resourceProvider.getStringById(shiftedId));
     }
-    else if (state == ButtonState.HEX && hexModeTextId != 0) {
-      textView.setText(stringProvider.getStringById(hexModeTextId));
+    else if (state == ButtonState.HEX && hexModeId != 0) {
+      textView.setText(resourceProvider.getStringById(hexModeId));
     }
   }
 
   @Override
   public String toString() {
-    return name;
+    return resourceProvider.getStringById(basicId).toString();
   }
 }

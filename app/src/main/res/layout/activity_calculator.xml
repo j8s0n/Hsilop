@@ -29,8 +29,8 @@
       android:fontFamily="monospace"
       android:text=""
       android:textAlignment="textEnd"
-      android:textAppearance="@android:style/TextAppearance.Material.Large"
-      android:textSize="30sp"/>
+      android:textAppearance="@style/Registers"
+      android:textSize="@dimen/register_text_size"/>
   </LinearLayout>
 
   <LinearLayout
@@ -52,8 +52,8 @@
       android:fontFamily="monospace"
       android:text=""
       android:textAlignment="textEnd"
-      android:textAppearance="@android:style/TextAppearance.Material.Large"
-      android:textSize="30sp"/>
+      android:textAppearance="@style/Registers"
+      android:textSize="@dimen/register_text_size"/>
   </LinearLayout>
 
   <LinearLayout
@@ -75,8 +75,8 @@
       android:fontFamily="monospace"
       android:text=""
       android:textAlignment="textEnd"
-      android:textAppearance="@android:style/TextAppearance.Material.Large"
-      android:textSize="30sp"/>
+      android:textAppearance="@style/Registers"
+      android:textSize="@dimen/register_text_size"/>
   </LinearLayout>
 
   <LinearLayout
@@ -98,8 +98,8 @@
       android:fontFamily="monospace"
       android:text=""
       android:textAlignment="textEnd"
-      android:textAppearance="@android:style/TextAppearance.Material.Large"
-      android:textSize="30sp"/>
+      android:textAppearance="@style/Registers"
+      android:textSize="@dimen/register_text_size"/>
   </LinearLayout>
 
   <GridView
@@ -109,10 +109,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnWidth="90dp"
-    android:verticalSpacing="25dp"
-    android:horizontalSpacing="10dp"
     android:stretchMode="columnWidth"
-    android:gravity="center"
     >
   </GridView>
 </RelativeLayout>

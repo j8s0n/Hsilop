@@ -1,5 +1,5 @@
 package com.jasonmajors.hsilop;
 
-interface StringResourceProvider {
+interface ResourceProvider {
   CharSequence getStringById(int id);
 }

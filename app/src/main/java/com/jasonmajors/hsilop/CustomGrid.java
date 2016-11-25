@@ -35,20 +35,20 @@ class CustomGrid extends BaseAdapter {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    View grid;
+    View gridItem;
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     if (convertView == null) {
-      grid = inflater.inflate(R.layout.grid_single, null);
-
-      TextView textView = (TextView) grid.findViewById(R.id.grid_text);
-      textView.setText(buttons.get(position).getBasicTextId());
+      gridItem = inflater.inflate(R.layout.grid_single, null);
+      gridItem.setMinimumHeight(CalculatorActivity.getButtonRowHeight());
+      TextView textView = (TextView) gridItem.findViewById(R.id.grid_text);
       buttons.get(position).setTextView(textView);
+      buttons.get(position).updateTextView(Button.ButtonState.BASIC);
     }
     else {
-      grid = convertView;
+      gridItem = convertView;
     }
 
-    return grid;
+    return gridItem;
   }
 }

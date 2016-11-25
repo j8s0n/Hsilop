@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="Error"
+         parent="@android:style/TextAppearance.Material.Large">
+    <item name="android:textSize">@dimen/error_text_size</item>
+    <item name="android:textColor">@color/errorColor</item>
+  </style>
+  <style name="Registers"
+    parent="@android:style/TextAppearance.Material.Large">
+    <item name="android:textSize">@dimen/register_text_size</item>
+  </style>
+
+  <dimen name="register_text_size">30sp</dimen>
+  <dimen name="error_text_size">30sp</dimen>
+  <color name="errorColor">#ff3333</color>
+</resources>

@@ -41,10 +41,28 @@ class Number {
     return new Number(value / rhs.value);
   }
 
+  @Override
+  public int hashCode() {
+    return Double.hashCode(value);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    else if (obj == null || obj.getClass() != this.getClass()) {
+      return false;
+    }
+
+    Number otherNumber = (Number) obj;
+    return value == otherNumber.value;
+  }
+
   int compareTo(Number rhs) {
     double diff = value - rhs.value;
     double average = (value + rhs.value) / 2.0;
-    if (Math.abs(diff) / average < CLOSE_ENOUGH) {
+    if (equals(rhs) || Math.abs(diff / average) < CLOSE_ENOUGH) {
       return 0;
     }
     else if (value < rhs.value) {
@@ -76,6 +94,11 @@ class Number {
   @NotNull
   static Number valueOf(String s) {
     return new Number(Double.parseDouble(s));
+  }
+
+  @Override
+  public String toString() {
+    return toString(false);
   }
 
   @NotNull
