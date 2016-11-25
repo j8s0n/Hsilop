@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -13,6 +14,8 @@ import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.View.TEXT_ALIGNMENT_TEXT_END;
 
 public class CalculatorActivity extends AppCompatActivity implements ResourceProvider {
   private static int DISPLAY_WIDTH = 20;
@@ -489,10 +492,12 @@ public class CalculatorActivity extends AppCompatActivity implements ResourcePro
     TextView registerX = registers.get(0);
     registerX.setTextAppearance(R.style.Error);
     registerX.setText(message);
+    registerX.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
     final Handler handler = new Handler();
     handler.postDelayed(() -> {
       registerX.setTextAppearance(R.style.Registers);
+      registerX.setTextAlignment(TEXT_ALIGNMENT_TEXT_END);
       redrawStack(false);
     }, 800);
   }

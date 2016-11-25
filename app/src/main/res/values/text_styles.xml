@@ -4,10 +4,12 @@
          parent="@android:style/TextAppearance.Material.Large">
     <item name="android:textSize">@dimen/error_text_size</item>
     <item name="android:textColor">@color/errorColor</item>
+    <item name="android:fontFamily">sans-serif-condensed</item>
   </style>
   <style name="Registers"
     parent="@android:style/TextAppearance.Material.Large">
     <item name="android:textSize">@dimen/register_text_size</item>
+    <item name="android:fontFamily">monospace</item>
   </style>
 
   <dimen name="register_text_size">30sp</dimen>

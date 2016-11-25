@@ -40,8 +40,8 @@ class Calculator {
     Number z = y.add(x);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void subtract() {
@@ -51,8 +51,8 @@ class Calculator {
     Number z = y.subtract(x);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void multiply() {
@@ -62,8 +62,8 @@ class Calculator {
     Number z = y.multiply(x);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void divide() {
@@ -77,8 +77,8 @@ class Calculator {
     Number z = y.divide(x);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void power() {
@@ -88,8 +88,8 @@ class Calculator {
     Number z = Number.valueOf(Math.pow(y.doubleValue(), x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void square() {
@@ -98,7 +98,7 @@ class Calculator {
     Number z = x.pow(2);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void squareRoot() {
@@ -111,7 +111,7 @@ class Calculator {
     Number z = Number.valueOf(Math.sqrt(x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void naturalLog() {
@@ -124,7 +124,7 @@ class Calculator {
     Number z = Number.valueOf(Math.log(x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void eToTheX() {
@@ -133,7 +133,7 @@ class Calculator {
     Number z = Number.valueOf(Math.exp(x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void log10() {
@@ -146,7 +146,7 @@ class Calculator {
     Number z = Number.valueOf(Math.log10(x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void tenToTheX() {
@@ -155,7 +155,7 @@ class Calculator {
     Number z = Number.valueOf(Math.pow(10.0, x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void sin(boolean radians) {
@@ -164,7 +164,7 @@ class Calculator {
     Number z = Number.valueOf(Math.sin(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void cos(boolean radians) {
@@ -173,7 +173,7 @@ class Calculator {
     Number z = Number.valueOf(Math.cos(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void tan(boolean radians) {
@@ -182,7 +182,7 @@ class Calculator {
     Number z = Number.valueOf(Math.tan(convertToRadians(x.doubleValue(), radians)));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void asin(boolean radians) {
@@ -196,7 +196,7 @@ class Calculator {
     Number z = Number.valueOf(convertOutputAngle(Math.asin(x.doubleValue()), radians));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void acos(boolean radians) {
@@ -210,7 +210,7 @@ class Calculator {
     Number z = Number.valueOf(convertOutputAngle(Math.acos(x.doubleValue()), radians));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void atan(boolean radians) {
@@ -219,7 +219,7 @@ class Calculator {
     Number z = Number.valueOf(convertOutputAngle(Math.atan(x.doubleValue()), radians));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   private double convertToRadians(double value, boolean alreadyRadians) {
@@ -248,17 +248,21 @@ class Calculator {
     Number z = ONE.divide(x);
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void factorial() {
     checkSize(OperatorType.UNARY);
-    // n! = gamma(n + 1)
+
+    if (stack.peek().compareTo(Number.ZERO) < 0) {
+      throw new IllegalStateException("Factorial of a negative.");
+    }
+
     Number x = stack.pop();
     Number z;
 
     // Zero.
-    if (x.equals(ZERO)) {
+    if (x.compareTo(ZERO) == 0) {
       z = ONE;
     }
     // Integer.
@@ -266,13 +270,14 @@ class Calculator {
       z = Number.valueOf(BigIntegerMath.factorial(x.intValue()).doubleValue());
     }
     // Other.
+    // n! = gamma(n + 1)
     else {
       z = Number.valueOf(gamma(x.doubleValue() + 1));
     }
 
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   private static double gamma(double z) {
@@ -293,8 +298,8 @@ class Calculator {
     Number z = Number.valueOf(Math.pow(y.doubleValue(), 1.0 / x.doubleValue()));
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void negate() {
@@ -303,7 +308,7 @@ class Calculator {
     Number z = x.negate();
     stack.push(z);
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.ADD, z)));
+                                   new HistoryEntry(ActionType.ADD, z)));
   }
 
   synchronized void dropOneValue() {
@@ -333,8 +338,12 @@ class Calculator {
     for (HistoryEntry history : Lists.reverse(histories)) {
       switch (history.actionType) {
       case ADD:
+        // This should be .equals(), not .compareTo(), because it's verifying that the item on the stack is the same
+        // item we're undoing.
         if (!stack.peek().equals(history.getValue())) {
-          throw new IllegalStateException("Stack history does not match.");
+          // This is very bad. The undo history is fucked. Clear it out.
+          undoHistory.clear();
+          throw new IllegalStateException("Undo history broken.");
         }
 
         stack.pop();
@@ -355,9 +364,9 @@ class Calculator {
     stack.push(y);
 
     addUndoItem(Lists.newArrayList(new HistoryEntry(ActionType.REMOVE, x),
-                                        new HistoryEntry(ActionType.REMOVE, y),
-                                        new HistoryEntry(ActionType.ADD, x),
-                                        new HistoryEntry(ActionType.ADD, y)));
+                                   new HistoryEntry(ActionType.REMOVE, y),
+                                   new HistoryEntry(ActionType.ADD, x),
+                                   new HistoryEntry(ActionType.ADD, y)));
   }
 
   synchronized Number getTop() {

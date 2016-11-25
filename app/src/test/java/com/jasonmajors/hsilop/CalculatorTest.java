@@ -2,13 +2,11 @@ package com.jasonmajors.hsilop;
 
 import com.google.common.collect.ImmutableList;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -16,25 +14,30 @@ import static org.junit.Assert.fail;
 public class CalculatorTest {
   private static final double DELTA = 0.00001;
   private Calculator calculator;
-  private final BigDecimal x = BigDecimal.valueOf(4.3);
-  private final BigDecimal y = BigDecimal.valueOf(6.2);
-  private final BigDecimal four = BigDecimal.valueOf(4);
-  private final BigDecimal fourFactorial = BigDecimal.valueOf(4 * 3 * 2);
-  private final BigDecimal negX = x.negate();
-  private final BigDecimal xFactorial = BigDecimal.valueOf(38.07797645);
-  private final BigDecimal oneHalf = BigDecimal.valueOf(0.5);
-  private final BigDecimal xthRootOfY = BigDecimal.valueOf(1.5285411577);
+  private final Number x = Number.valueOf(4.3);
+  private final Number y = Number.valueOf(6.2);
+  private final Number four = Number.valueOf(4);
+  private final Number fourFactorial = Number.valueOf(4 * 3 * 2);
+  private final Number negX = x.negate();
+  private final Number xFactorial = Number.valueOf(38.07797645);
+  private final Number oneHalf = Number.valueOf(0.5);
+  private final Number xthRootOfY = Number.valueOf(1.5285411577);
 
   @Rule
-  ExpectedException thrown = ExpectedException.none();
+  public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setup() {
     calculator = Calculator.getInstance();
   }
 
+  @After
+  public void cleanup() {
+    calculator.clearStack();
+  }
+
   @Test
-  void enter() {
+  public void enter() {
     calculator.enter(y);
     assertEquals(1, calculator.getStack().size());
     calculator.enter(x);
@@ -44,7 +47,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void add() {
+  public void add() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.add();
@@ -53,7 +56,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void subtract() {
+  public void subtract() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.subtract();
@@ -62,7 +65,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void multiply() {
+  public void multiply() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.multiply();
@@ -71,31 +74,31 @@ public class CalculatorTest {
   }
 
   @Test
-  void divide() {
+  public void divide() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.divide();
-    assertEquals(y.divide(x, MathContext.DECIMAL128), calculator.getTop());
+    assertEquals(y.divide(x), calculator.getTop());
     assertEquals(1, calculator.getStack().size());
   }
 
   @Test
-  void divideByZero() {
+  public void divideByZero() {
     calculator.enter(x);
-    calculator.enter(BigDecimal.ZERO);
+    calculator.enter(Number.ZERO);
     try {
       calculator.divide();
       fail();
     }
     catch (IllegalStateException e) {
       assertEquals(2, calculator.getStack().size());
-      assertEquals(BigDecimal.ZERO, calculator.getTop());
+      assertEquals(Number.ZERO, calculator.getTop());
       assertEquals(x, calculator.getStack().get(1));
     }
   }
 
   @Test
-  void power() {
+  public void power() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.power();
@@ -104,7 +107,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void square() {
+  public void square() {
     calculator.enter(x);
     calculator.square();
     assertEquals(x.multiply(x), calculator.getTop());
@@ -112,14 +115,14 @@ public class CalculatorTest {
   }
 
   @Test
-  void squareRoot() {
+  public void squareRoot() {
     calculator.enter(x);
     calculator.squareRoot();
     assertEquals(Math.sqrt(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void squareRootOfANegative() {
+  public void squareRootOfANegative() {
     calculator.enter(negX);
     try {
       calculator.squareRoot();
@@ -131,14 +134,14 @@ public class CalculatorTest {
   }
 
   @Test
-  void naturalLog() {
+  public void naturalLog() {
     calculator.enter(x);
     calculator.naturalLog();
     assertEquals(Math.log(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void naturalLogOfANegative() {
+  public void naturalLogOfANegative() {
     calculator.enter(negX);
     try {
       calculator.naturalLog();
@@ -150,28 +153,28 @@ public class CalculatorTest {
   }
 
   @Test
-  void eToTheX() {
+  public void eToTheX() {
     calculator.enter(x);
     calculator.eToTheX();
     assertEquals(Math.exp(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void eToTheNegativeX() {
+  public void eToTheNegativeX() {
     calculator.enter(negX);
     calculator.eToTheX();
     assertEquals(Math.exp(negX.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void log10() {
+  public void log10() {
     calculator.enter(x);
     calculator.log10();
     assertEquals(Math.log10(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void log10OfANegative() {
+  public void log10OfANegative() {
     calculator.enter(negX);
     try {
       calculator.log10();
@@ -183,52 +186,52 @@ public class CalculatorTest {
   }
 
   @Test
-  void tenToTheX() {
+  public void tenToTheX() {
     calculator.enter(x);
     calculator.tenToTheX();
     assertEquals(Math.pow(10, x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void tenToTheNegativeX() {
+  public void tenToTheNegativeX() {
     calculator.enter(negX);
     calculator.tenToTheX();
     assertEquals(Math.pow(10, negX.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void sin() {
+  public void sin() {
     calculator.enter(x);
-    calculator.sin();
+    calculator.sin(true);
     assertEquals(Math.sin(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void cos() {
+  public void cos() {
     calculator.enter(x);
-    calculator.cos();
+    calculator.cos(true);
     assertEquals(Math.cos(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void tan() {
+  public void tan() {
     calculator.enter(x);
-    calculator.tan();
+    calculator.tan(true);
     assertEquals(Math.tan(x.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void asin() {
+  public void asin() {
     calculator.enter(oneHalf);
-    calculator.asin();
+    calculator.asin(true);
     assertEquals(Math.asin(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void asinOutOfRange() {
+  public void asinOutOfRange() {
     calculator.enter(x);
     try {
-      calculator.asin();
+      calculator.asin(true);
       fail();
     }
     catch (IllegalStateException e) {
@@ -237,17 +240,17 @@ public class CalculatorTest {
   }
 
   @Test
-  void acos() {
+  public void acos() {
     calculator.enter(oneHalf);
-    calculator.acos();
+    calculator.acos(true);
     assertEquals(Math.acos(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void acosOutOfRange() {
+  public void acosOutOfRange() {
     calculator.enter(x);
     try {
-      calculator.acos();
+      calculator.acos(true);
       fail();
     }
     catch (IllegalStateException e) {
@@ -256,54 +259,54 @@ public class CalculatorTest {
   }
 
   @Test
-  void atan() {
+  public void atan() {
     calculator.enter(oneHalf);
-    calculator.atan();
+    calculator.atan(true);
     assertEquals(Math.atan(oneHalf.doubleValue()), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void oneOverX() {
+  public void oneOverX() {
     calculator.enter(x);
     calculator.oneOverX();
-    assertEquals(BigDecimal.ONE.divide(x, MathContext.DECIMAL128), calculator.getTop());
+    assertEquals(Number.ONE.divide(x), calculator.getTop());
   }
 
   @Test
-  void oneOverZero() {
-    calculator.enter(BigDecimal.ZERO);
+  public void oneOverZero() {
+    calculator.enter(Number.ZERO);
     try {
       calculator.oneOverX();
       fail();
     }
     catch (IllegalStateException e) {
-      assertEquals(BigDecimal.ZERO, calculator.getTop());
+      assertEquals(Number.ZERO, calculator.getTop());
     }
   }
 
   @Test
-  void integerFactorial() {
+  public void integerFactorial() {
     calculator.enter(four);
     calculator.factorial();
     assertEquals(fourFactorial, calculator.getTop());
   }
 
   @Test
-  void zeroFactorial() {
-    calculator.enter(BigDecimal.ZERO);
+  public void zeroFactorial() {
+    calculator.enter(Number.ZERO);
     calculator.factorial();
-    assertEquals(BigDecimal.ONE, calculator.getTop());
+    assertEquals(Number.ONE, calculator.getTop());
   }
 
   @Test
-  void fractionFactorial() {
+  public void fractionFactorial() {
     calculator.enter(x);
     calculator.factorial();
     assertEquals(xFactorial.doubleValue(), calculator.getTop().doubleValue(), DELTA);
   }
 
   @Test
-  void xthRootOfY() {
+  public void xthRootOfY() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.xthRootOfY();
@@ -311,7 +314,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void xthRootOfANegative() {
+  public void xthRootOfANegative() {
     calculator.enter(negX);
     calculator.enter(x);
 
@@ -326,14 +329,14 @@ public class CalculatorTest {
   }
 
   @Test
-  void negate() {
+  public void negate() {
     calculator.enter(x);
     calculator.negate();
     assertEquals(negX, calculator.getTop());
   }
 
   @Test
-  void dropOneValue() {
+  public void dropOneValue() {
     calculator.enter(x);
     calculator.enter(y);
     assertEquals(2, calculator.getStack().size());
@@ -344,13 +347,13 @@ public class CalculatorTest {
   }
 
   @Test
-  void dropValueOnEmptyStack() {
+  public void dropValueOnEmptyStack() {
     thrown.expect(IllegalStateException.class);
     calculator.dropOneValue();
   }
 
   @Test
-  void clearStack() {
+  public void clearStack() {
     calculator.enter(x);
     calculator.enter(y);
     assertEquals(2, calculator.getStack().size());
@@ -359,7 +362,7 @@ public class CalculatorTest {
   }
 
   @Test
-  void undo() {
+  public void undo() {
     calculator.enter(y);
     calculator.enter(x);
     calculator.add();
@@ -367,7 +370,7 @@ public class CalculatorTest {
     assertEquals(1, calculator.getStack().size());
 
     calculator.undo();
-    ImmutableList<BigDecimal> stack = calculator.getStack();
+    ImmutableList<Number> stack = calculator.getStack();
     assertEquals(2, stack.size());
     assertEquals(x, stack.get(0));
     assertEquals(y, stack.get(1));
